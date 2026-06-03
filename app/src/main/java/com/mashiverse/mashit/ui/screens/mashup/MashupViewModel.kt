@@ -15,6 +15,9 @@ import com.mashiverse.mashit.data.models.mashi.mappers.fromEntities
 import com.mashiverse.mashit.data.models.mashup.MashupDetails
 import com.mashiverse.mashit.data.models.mashup.MashupTrait
 import com.mashiverse.mashit.data.models.mashup.colors.ColorType
+import com.mashiverse.mashit.data.models.mashup.generation.GenerateMashupReq
+import com.mashiverse.mashit.data.models.mashup.save.MashupColors
+import com.mashiverse.mashit.data.models.mashup.save.MashupLayer
 import com.mashiverse.mashit.data.models.sys.dialog.DialogContent
 import com.mashiverse.mashit.data.models.sys.image.DownloadType
 import com.mashiverse.mashit.data.models.sys.image.ImageType
@@ -31,6 +34,7 @@ import com.mashiverse.mashit.data.states.sys.ImageIntent
 import com.mashiverse.mashit.data.states.utils.StackManager
 import com.mashiverse.mashit.utils.color.helpers.toHexString
 import com.mashiverse.mashit.utils.helpers.nft.getRandomTraits
+import com.mashiverse.mashit.utils.helpers.nft.toIpfsUri
 import com.mashiverse.mashit.utils.helpers.sys.startImageDownload
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -40,7 +44,10 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.Json
+import timber.log.Timber
 import javax.inject.Inject
+import kotlin.collections.map
 
 @HiltViewModel
 class MashupViewModel @Inject constructor(
@@ -299,7 +306,33 @@ class MashupViewModel @Inject constructor(
 
     fun onImageSave(downloadType: DownloadType) {
         mashupState.value.wallet?.let { wallet ->
-            startImageDownload(wallet, downloadType.type, worker = worker)
+            val assets = mashupState.value.mashupDetails.assets
+            val layers = assets
+                .filter { it.url != null }
+                .map { asset ->
+                    MashupLayer(
+                        name = asset.type.name.lowercase(),
+                        image = asset.url!!.toIpfsUri()
+                    )
+                }
+
+            val colors = mashupState.value.mashupDetails.colors
+            val mashupColors = MashupColors(
+                base = colors.base,
+                eyes = colors.eyes,
+                hair = colors.hair
+            )
+
+            val body = GenerateMashupReq(
+                assets = layers,
+                colors = mashupColors
+            )
+
+            Timber.tag("GG").d(body.toString())
+            val jsonString = Json.encodeToString(body)
+            Timber.tag("GG").d(jsonString)
+
+            startImageDownload(jsonString, downloadType.type, worker = worker)
         }
     }
 

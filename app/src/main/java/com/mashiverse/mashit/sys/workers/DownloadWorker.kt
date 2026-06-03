@@ -10,6 +10,7 @@ import com.mashiverse.mashit.utils.helpers.nft.saveImageToGallery
 import com.mashiverse.mashit.utils.helpers.sys.showNotification
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
+import timber.log.Timber
 
 @HiltWorker
 class UploadWorker @AssistedInject constructor(
@@ -22,11 +23,12 @@ class UploadWorker @AssistedInject constructor(
         return try {
             setProgress(workDataOf("STATE" to "LOADING"))
 
-            val wallet = inputData.getString(WALLET)
+            val wallet = inputData.getString(JSON_STRING)
+            Timber.tag("GGG").d(wallet)
             val imgType = inputData.getInt(IMG_TYPE, 0)
 
             wallet?.let {
-                val mashupResult = mashiverseRepo.getMashup(wallet, imgType)
+                val mashupResult = mashiverseRepo.generateMashup(wallet, imgType)
                 val timestamp = System.currentTimeMillis()
                 val fileName = if (mashupResult.contentType == "image/png") {
                     "mashup_$timestamp.png"
@@ -60,7 +62,7 @@ class UploadWorker @AssistedInject constructor(
     }
 
     companion object {
-        const val WALLET = "wallet"
+        const val JSON_STRING = "json_string"
         const val IMG_TYPE = "img_type"
     }
 }

@@ -88,6 +88,9 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     implementation(libs.timber)
 
+    // Json
+    implementation(libs.kotlinx.serialization.json)
+
     // Navigation
     implementation(libs.androidx.navigation.compose)
 
