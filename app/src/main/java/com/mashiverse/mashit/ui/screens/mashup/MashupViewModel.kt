@@ -336,8 +336,8 @@ class MashupViewModel @Inject constructor(
             val mintedName = if (mashupState.value.selectedMint == null || name == null) {
                 ""
             } else {
-                if (name.length > 13) {
-                    name.substring(0, 14) + "..." + " #${mashupState.value.selectedMint}"
+                if (name.length >= 17) {
+                    name.substring(0, 15) + "..." + " #${mashupState.value.selectedMint}"
                 } else {
                     name + " #${mashupState.value.selectedMint}"
                 }
