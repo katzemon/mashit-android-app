@@ -24,7 +24,7 @@ class MashiverseRepo @Inject constructor(
         return MashupResult(bytes, contentType)
     }
 
-    suspend fun generateMashup(jsonString: String, imgType: Int = 0): MashupResult {
+    suspend fun generateMashup(jsonString: String, imgType: Int = 0, mintedName: String? = ""): MashupResult {
         val downloadType = if (imgType == 0) {
             "png"
         } else {
@@ -33,7 +33,7 @@ class MashiverseRepo @Inject constructor(
 
         val body: GenerateMashupReq = Json.decodeFromString(jsonString)
 
-        val responseBody = mashiverseApi.generateMashup(imgType = downloadType, request = body)
+        val responseBody = mashiverseApi.generateMashup(imgType = downloadType, request = body, mintedName = mintedName)
 
         val contentType = responseBody.contentType()?.toString() ?: "image/png"
         val bytes = responseBody.byteStream().use { it.readBytes() }

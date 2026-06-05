@@ -332,8 +332,30 @@ class MashupViewModel @Inject constructor(
             val jsonString = Json.encodeToString(body)
             Timber.tag("GG").d(jsonString)
 
-            startImageDownload(jsonString, downloadType.type, worker = worker)
+            val name = mashupState.value.mashupDetails.name
+            val mintedName = if (mashupState.value.selectedMint == null || name == null) {
+                ""
+            } else {
+                if (name.length > 13) {
+                    name.substring(0, 14) + "..." + " #${mashupState.value.selectedMint}"
+                } else {
+                    name + " #${mashupState.value.selectedMint}"
+                }
+            }
+
+            startImageDownload(jsonString, downloadType.type, worker = worker, mintedName = mintedName)
         }
+    }
+
+    fun updateSelectedMint(mint: Int? = null) {
+        mashupState.value = mashupState.value.copy(selectedMint = mint)
+    }
+
+    fun updateName(name: String?) {
+        val details = mashupState.value.mashupDetails
+        mashupState.value = mashupState.value.copy(
+            mashupDetails = details.copy(name = name)
+        )
     }
 
     // Intents

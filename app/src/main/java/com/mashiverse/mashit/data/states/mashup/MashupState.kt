@@ -14,5 +14,6 @@ data class MashupState(
     val selectedColorType: ColorType = ColorType.BASE,
     val selectedCategory: TraitType = TraitType.BACKGROUND,
     val sortType: SortType = SortType.NEWEST,
-    val colors: SelectedColors = SelectedColors()
+    val colors: SelectedColors = SelectedColors(),
+    val selectedMint: Int? = null
 )

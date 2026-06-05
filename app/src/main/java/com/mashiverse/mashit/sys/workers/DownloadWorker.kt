@@ -26,9 +26,10 @@ class UploadWorker @AssistedInject constructor(
             val wallet = inputData.getString(JSON_STRING)
             Timber.tag("GGG").d(wallet)
             val imgType = inputData.getInt(IMG_TYPE, 0)
+            val mintedName = inputData.getString(MINTED_NAME)
 
             wallet?.let {
-                val mashupResult = mashiverseRepo.generateMashup(wallet, imgType)
+                val mashupResult = mashiverseRepo.generateMashup(wallet, imgType, mintedName)
                 val timestamp = System.currentTimeMillis()
                 val fileName = if (mashupResult.contentType == "image/png") {
                     "mashup_$timestamp.png"
@@ -63,6 +64,7 @@ class UploadWorker @AssistedInject constructor(
 
     companion object {
         const val JSON_STRING = "json_string"
+        const val MINTED_NAME = "minted_name"
         const val IMG_TYPE = "img_type"
     }
 }

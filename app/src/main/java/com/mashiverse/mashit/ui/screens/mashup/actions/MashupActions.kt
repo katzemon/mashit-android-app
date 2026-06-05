@@ -50,7 +50,7 @@ fun MashupActions(
                     colors = mashupDetails.colors,
                     assets = mashupDetails.assets,
                     holderWidth = holderWidth,
-                    processImageIntent = processImageIntent,
+                    processImageIntent = processImageIntent
                 )
             }
 

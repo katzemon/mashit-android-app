@@ -11,9 +11,10 @@ import androidx.work.WorkRequest
 import com.mashiverse.mashit.sys.workers.UploadWorker
 import java.util.concurrent.TimeUnit
 
-fun startImageDownload(jsonString: String, imageType: Int, worker: WorkManager) {
+fun startImageDownload(jsonString: String, imageType: Int, worker: WorkManager, mintedName: String? = "") {
     val inputData = Data.Builder()
         .putString(UploadWorker.JSON_STRING, jsonString)
+        .putString(UploadWorker.MINTED_NAME, mintedName)
         .putInt(UploadWorker.IMG_TYPE, imageType)
         .build()
 

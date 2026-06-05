@@ -18,6 +18,7 @@ interface MashiverseApi {
 
     @POST("/api/mashi/app_mashup")
     suspend fun generateMashup(
+        @Query("minted_name") mintedName: String? = "",
         @Query("download_type") imgType: String = "png",
         @Body request: GenerateMashupReq
     ): ResponseBody

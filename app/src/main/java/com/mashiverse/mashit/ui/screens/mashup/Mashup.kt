@@ -17,6 +17,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -29,10 +30,14 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.fastFirstOrNull
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.mashiverse.mashit.data.models.mashi.MintData
 import com.mashiverse.mashit.data.models.mashi.Nft
+import com.mashiverse.mashit.data.models.mashi.Owned
 import com.mashiverse.mashit.data.models.mashi.TraitType
 import com.mashiverse.mashit.data.models.mashup.colors.ColorType
+import com.mashiverse.mashit.data.remote.dtos.AlchemyDto
 import com.mashiverse.mashit.data.states.mashup.ActionsIntent
 import com.mashiverse.mashit.data.states.sys.DialogIntent.OnClear
 import com.mashiverse.mashit.ui.default.dialogs.Dialog
@@ -44,6 +49,7 @@ import com.mashiverse.mashit.ui.screens.mashup.actions.MashupActions
 import com.mashiverse.mashit.ui.screens.mashup.categories.CategorySelector
 import com.mashiverse.mashit.ui.screens.mashup.categories.sections.CollectiblesCategory
 import com.mashiverse.mashit.ui.screens.mashup.color.ColorSheet
+import com.mashiverse.mashit.ui.screens.mashup.mint.MintSelector
 import com.mashiverse.mashit.ui.screens.mashup.preview.MashupPreview
 import com.mashiverse.mashit.ui.theme.MediumPadding
 import com.mashiverse.mashit.ui.theme.Padding
@@ -84,6 +90,7 @@ fun Mashup(searchQuery: State<String>) {
     val mashupUiState by remember { viewModel.mashupUiState }
     val mashupState by remember { viewModel.mashupState }
 
+
     val selectedColorType by remember(mashupState.selectedColorType) {
         mutableStateOf(
             mashupState.selectedColorType
@@ -107,6 +114,50 @@ fun Mashup(searchQuery: State<String>) {
     }
 
     var nfts by remember { mutableStateOf<List<Nft>>(emptyList()) }
+    var mintData by remember { mutableStateOf<List<MintData>>(emptyList()) }
+
+    LaunchedEffect(mashupState.nfts) {
+        val tempData = mutableListOf<MintData>()
+        mashupState.nfts.forEach { nft ->
+            tempData.add(
+                MintData(
+                    compositeUrl = nft.traits?.first{ it.type == TraitType.BACKGROUND }?.url ?: "",
+                    mints = nft.owned!!.map { it.mint }
+                )
+            )
+        }
+        mintData = tempData
+    }
+
+    val availableMints by remember(mintData, mashupState.mashupDetails) {
+        derivedStateOf {
+            val backgroundUrl =
+                mashupState.mashupDetails.assets.first { it.type == TraitType.BACKGROUND }.url
+            val availableMints =
+                if (mintData.firstOrNull { it.compositeUrl == backgroundUrl } != null) {
+                    mintData.first { it.compositeUrl == backgroundUrl }.mints
+                } else {
+                    emptyList()
+                }
+
+            if (availableMints.isEmpty()) {
+                viewModel.updateSelectedMint(null)
+            }
+
+            availableMints
+        }
+    }
+
+    LaunchedEffect(mashupState.mashupDetails) {
+        val selectedBackground = mashupState.mashupDetails.assets.first { it.type == TraitType.BACKGROUND }.url ?: ""
+        val selectedNft = nfts.firstOrNull { it.traits?.firstOrNull { it.url == selectedBackground } != null }
+
+        if (selectedNft == null) {
+            viewModel.updateName(null)
+        } else {
+            viewModel.updateName(selectedNft.name)
+        }
+    }
 
     LaunchedEffect(mashupState.nfts, searchQuery) {
         val temp = mutableListOf<Nft>()
@@ -170,8 +221,17 @@ fun Mashup(searchQuery: State<String>) {
                         .clickable { viewModel.processActionsIntent(ActionsIntent.OnPreview) },
                     holderWidth = XLHolderWidth,
                     processImageIntent = { intent -> viewModel.processImageIntent(intent) },
-                    processActionsIntent = { intent -> viewModel.processActionsIntent(intent) }
+                    processActionsIntent = { intent -> viewModel.processActionsIntent(intent) },
                 )
+
+                Spacer(Modifier.height(SmallPadding))
+
+                MintSelector(
+                    mints = availableMints,
+                    selectedMint = mashupState.selectedMint
+                ) { mint ->
+                    viewModel.updateSelectedMint(mint)
+                }
 
                 Column(
                     modifier = Modifier
@@ -180,7 +240,7 @@ fun Mashup(searchQuery: State<String>) {
                             height = with(density) { size.height.toDp() } - SmallPadding
                         },
                 ) {
-                    Spacer(Modifier.height(Padding))
+                    Spacer(Modifier.height(SmallPadding))
 
                     Row {
                         Sorting { type ->
