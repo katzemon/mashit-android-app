@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -16,6 +17,7 @@ import com.mashiverse.mashit.data.models.mashup.MashupDetails
 import com.mashiverse.mashit.data.states.mashup.ActionsIntent
 import com.mashiverse.mashit.data.states.sys.ImageIntent
 import com.mashiverse.mashit.ui.default.traits.MashupComposite
+import com.mashiverse.mashit.ui.default.traits.MintText
 import com.mashiverse.mashit.ui.theme.Surface
 import com.mashiverse.mashit.ui.theme.TraitShape
 
@@ -25,7 +27,8 @@ fun MashupActions(
     modifier: Modifier = Modifier,
     holderWidth: Dp,
     processImageIntent: (ImageIntent) -> Unit,
-    processActionsIntent: (ActionsIntent) -> Unit
+    processActionsIntent: (ActionsIntent) -> Unit,
+    selectedMint: Int?
 ) {
     Box(
         modifier = Modifier
@@ -52,6 +55,16 @@ fun MashupActions(
                     holderWidth = holderWidth,
                     processImageIntent = processImageIntent
                 )
+
+                selectedMint?.let {
+                    MintText(
+                        modifier = Modifier
+                            .padding(bottom = 3.dp, end = 6.dp)
+                            .align(Alignment.BottomEnd),
+                        mint = selectedMint,
+                        fontSize = 16
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.weight(1F))

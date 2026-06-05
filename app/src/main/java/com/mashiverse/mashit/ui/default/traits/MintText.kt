@@ -9,20 +9,26 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.sp
+import coil3.size.Size
 import com.mashiverse.mashit.ui.theme.Geist
+import org.checkerframework.checker.units.qual.Speed
+import org.checkerframework.checker.units.qual.s
 
 @Composable
 fun MintText(
     modifier: Modifier = Modifier,
-    mint: Int
+    mint: Int,
+    fontSize: Int? = null
 ) {
+    val size = fontSize?.sp ?: 12.sp
+
     Box(
         modifier = modifier,
         contentAlignment = Alignment.Center
     ) {
         Text(
             text = "#${mint}",
-            fontSize = 12.sp,
+            fontSize = size,
             style = TextStyle(
                 color = Color.Black, // The outline color
                 drawStyle = Stroke(
@@ -35,7 +41,7 @@ fun MintText(
         // 2. Draw the FILL second (Top Layer)
         Text(
             text = "#${mint}",
-            fontSize = 12.sp,
+            fontSize = size,
             color = Color.White // The inner color
         )
     }
