@@ -34,6 +34,7 @@ import org.web3j.protocol.http.HttpService
 import timber.log.Timber
 import java.math.BigInteger
 import kotlin.coroutines.resume
+import kotlin.time.Duration.Companion.milliseconds
 
 object Web3Helper {
     private const val CHAIN_ID_APPKIT = "eip155:137"
@@ -57,29 +58,29 @@ object Web3Helper {
             val lid = BigInteger(listingId)
             val usdcPrice = (price * 1_000_000).toLong().toBigInteger()
 
-            if (getUsdcBalance(fromAddress = fromAddress) < usdcPrice) {
-                withContext(Dispatchers.Main) {
-                    onDialogTrigger(
-                        DialogContent(
-                            title = "Insufficient balance",
-                            text = "Please top up USDC"
-                        )
-                    )
-                }
-                return@withContext false
-            }
-
-            if (!canUserMint(listingId = lid, userAddress = fromAddress)) {
-                withContext(Dispatchers.Main) {
-                    onDialogTrigger(
-                        DialogContent(
-                            title = "Limit Reached",
-                            text = "You've reached the limit"
-                        )
-                    )
-                }
-                return@withContext false
-            }
+//            if (getUsdcBalance(fromAddress = fromAddress) < usdcPrice) {
+//                withContext(Dispatchers.Main) {
+//                    onDialogTrigger(
+//                        DialogContent(
+//                            title = "Insufficient balance",
+//                            text = "Please top up USDC"
+//                        )
+//                    )
+//                }
+//                return@withContext false
+//            }
+//
+//            if (!canUserMint(listingId = lid, userAddress = fromAddress)) {
+//                withContext(Dispatchers.Main) {
+//                    onDialogTrigger(
+//                        DialogContent(
+//                            title = "Limit Reached",
+//                            text = "You've reached the limit"
+//                        )
+//                    )
+//                }
+//                return@withContext false
+//            }
 
             return@withContext when (walletType) {
                 WalletType.BASE -> if (client != null) {
@@ -139,14 +140,17 @@ object Web3Helper {
     }
 
     private suspend fun executeCoinbaseAction(client: CoinbaseWalletSDK, action: Action): String? =
-        withTimeoutOrNull(60000L) {
+        withTimeoutOrNull(60000L.milliseconds) {
             suspendCancellableCoroutine { continuation ->
                 client.makeRequest(RequestContent.Request(actions = listOf(action))) { result ->
                     result.onSuccess { results ->
                         val hash = (results.firstOrNull() as? ActionResult.Result)?.value
                         continuation.resumeSafely(value = hash)
                     }
-                    result.onFailure { continuation.resumeSafely(value = null) }
+                    result.onFailure { err->
+                        Timber.tag("GG").d(err)
+                        continuation.resumeSafely(value = null)
+                    }
                 }
             }
         }
@@ -203,8 +207,8 @@ object Web3Helper {
     private fun buildBaseTx(from: String, to: String, data: String, nonce: Int) =
         Web3JsonRPC.SendTransaction(
             fromAddress = from, toAddress = to, weiValue = "0", data = data,
-            chainId = CHAIN_ID_RAW, nonce = nonce, gasLimit = "450000",
-            maxFeePerGas = "500000000000", maxPriorityFeePerGas = "50000000000",
+            chainId = CHAIN_ID_RAW, nonce = nonce, gasLimit = null,
+            maxFeePerGas = null, maxPriorityFeePerGas = null,
             gasPriceInWei = null, actionSource = null
         ).action()
 
@@ -214,7 +218,7 @@ object Web3Helper {
 
     private suspend fun waitForTransaction(txHash: String) {
         if (txHash == "confirmed_by_user" || txHash == "rejected") {
-            delay(5000)
+            delay(5000.milliseconds)
             return
         }
         repeat(20) {
@@ -224,7 +228,7 @@ object Web3Helper {
                 java.util.Optional.empty()
             }
             if (receipt.isPresent) return@repeat
-            delay(2000)
+            delay(2000.milliseconds)
         }
     }
 

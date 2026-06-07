@@ -6,6 +6,7 @@ import androidx.work.Configuration
 import com.mashiverse.mashit.utils.COINBASE_ID
 import com.mashiverse.mashit.utils.METAMASK_ID
 import com.mashiverse.mashit.utils.REOWN_ID
+import com.mashiverse.mashit.utils.TRUST_ID
 import com.reown.android.Core
 import com.reown.android.CoreClient
 import com.reown.android.relay.ConnectionType
@@ -51,7 +52,8 @@ class MashItApp : Application(), Configuration.Provider {
                 coinbaseEnabled = true,
                 includeWalletIds = listOf(
                     METAMASK_ID,
-                    COINBASE_ID
+                    COINBASE_ID,
+                    TRUST_ID
                 )
             ),
             onSuccess = { AppKit.setChains(listOf(polygonChain)) },
