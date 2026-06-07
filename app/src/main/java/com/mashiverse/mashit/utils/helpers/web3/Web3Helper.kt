@@ -58,29 +58,29 @@ object Web3Helper {
             val lid = BigInteger(listingId)
             val usdcPrice = (price * 1_000_000).toLong().toBigInteger()
 
-//            if (getUsdcBalance(fromAddress = fromAddress) < usdcPrice) {
-//                withContext(Dispatchers.Main) {
-//                    onDialogTrigger(
-//                        DialogContent(
-//                            title = "Insufficient balance",
-//                            text = "Please top up USDC"
-//                        )
-//                    )
-//                }
-//                return@withContext false
-//            }
-//
-//            if (!canUserMint(listingId = lid, userAddress = fromAddress)) {
-//                withContext(Dispatchers.Main) {
-//                    onDialogTrigger(
-//                        DialogContent(
-//                            title = "Limit Reached",
-//                            text = "You've reached the limit"
-//                        )
-//                    )
-//                }
-//                return@withContext false
-//            }
+            if (getUsdcBalance(fromAddress = fromAddress) < usdcPrice) {
+                withContext(Dispatchers.Main) {
+                    onDialogTrigger(
+                        DialogContent(
+                            title = "Insufficient balance",
+                            text = "Please top up USDC"
+                        )
+                    )
+                }
+                return@withContext false
+            }
+
+            if (!canUserMint(listingId = lid, userAddress = fromAddress)) {
+                withContext(Dispatchers.Main) {
+                    onDialogTrigger(
+                        DialogContent(
+                            title = "Limit Reached",
+                            text = "You've reached the limit"
+                        )
+                    )
+                }
+                return@withContext false
+            }
 
             return@withContext when (walletType) {
                 WalletType.BASE -> if (client != null) {
