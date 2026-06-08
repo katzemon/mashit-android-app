@@ -106,7 +106,12 @@ class ArtistPageViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 artistPageUiState.value = artistPageUiState.value.copy(
+                    isPreviewLoading = true
+                )
+
+                artistPageUiState.value = artistPageUiState.value.copy(
                     selectedNft = mashitRepo.getShopItem(id),
+                    isPreviewLoading = false
                 )
             } catch (e: Exception) {
                 Timber.e(e, "Failed to fetch shop item details")

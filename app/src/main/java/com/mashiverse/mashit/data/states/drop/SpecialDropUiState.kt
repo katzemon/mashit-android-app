@@ -12,5 +12,5 @@ data class SpecialDropUiState(
     val dropInfo: DropInfo? = null,
     val selectedNft: Nft? = null,
     val dialogContent: DialogContent? = null,
-    val isExpanded: Boolean = false
+    val isLoadingPreview: Boolean = false
 )

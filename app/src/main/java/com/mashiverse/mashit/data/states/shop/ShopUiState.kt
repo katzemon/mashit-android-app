@@ -15,5 +15,6 @@ data class ShopUiState(
     val isCategory: Boolean = false,
     val category: ShopDataType = ShopDataType.RECENTLY,
     val selectedNft: Nft? = null,
+    val isLoadingPreview: Boolean = false,
     val dialogContent: DialogContent? = null
 )

@@ -139,7 +139,12 @@ class RegularShopViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 shopUiState.value = shopUiState.value.copy(
-                    selectedNft = mashItRepo.getShopItem(id)
+                    isLoadingPreview = true
+                )
+
+                shopUiState.value = shopUiState.value.copy(
+                    selectedNft = mashItRepo.getShopItem(id),
+                    isLoadingPreview = false
                 )
             } catch (e: Exception) {
                 Timber.e(e, "Failed to fetch shop item details")

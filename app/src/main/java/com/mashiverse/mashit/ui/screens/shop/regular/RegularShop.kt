@@ -19,13 +19,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.onSizeChanged
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.coinbase.android.nativesdk.CoinbaseWalletSDK
 import com.mashiverse.mashit.data.models.sys.data.ShopDataType
 import com.mashiverse.mashit.data.states.shop.ShopIntent
 import com.mashiverse.mashit.data.states.sys.DialogIntent
 import com.mashiverse.mashit.ui.default.dialogs.Dialog
+import com.mashiverse.mashit.ui.default.indicators.LoadingIndicator
 import com.mashiverse.mashit.ui.default.modals.ItemPreviewModal
 import com.mashiverse.mashit.ui.default.modals.MashiDetailsSection
 import com.mashiverse.mashit.ui.screens.shop.sections.Category
@@ -124,21 +124,27 @@ fun RegularShop(
         }
     }
 
-    shopUiState.selectedNft?.let { nft ->
-        ItemPreviewModal(
-            selectedNft = nft,
-            sheetState = previewState,
-            closeBottomSheet = { viewModel.processShopIntent(ShopIntent.OnNftDeselect) },
-            processImageIntent = { intent -> viewModel.processImageIntent(intent) }
-        ) {
-            MashiDetailsSection(
-                nft = nft,
-                scope = scope,
-                closeBottomSheet = { viewModel.processShopIntent(ShopIntent.OnNftDeselect) },
+    if (shopUiState.isLoadingPreview || shopUiState.selectedNft != null) {
+        if (shopUiState.isLoadingPreview) {
+            LoadingIndicator(text = "Loading")
+        }
+
+        shopUiState.selectedNft?.let { nft ->
+            ItemPreviewModal(
+                selectedNft = nft,
                 sheetState = previewState,
-                clientRef = clientRef,
-                processWeb3Intent = { intent -> viewModel.processWeb3Intent(intent) }
-            )
+                closeBottomSheet = { viewModel.processShopIntent(ShopIntent.OnNftDeselect) },
+                processImageIntent = { intent -> viewModel.processImageIntent(intent) }
+            ) {
+                MashiDetailsSection(
+                    nft = nft,
+                    scope = scope,
+                    closeBottomSheet = { viewModel.processShopIntent(ShopIntent.OnNftDeselect) },
+                    sheetState = previewState,
+                    clientRef = clientRef,
+                    processWeb3Intent = { intent -> viewModel.processWeb3Intent(intent) }
+                )
+            }
         }
     }
 

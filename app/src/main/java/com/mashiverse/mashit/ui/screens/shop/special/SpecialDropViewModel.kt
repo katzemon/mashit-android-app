@@ -97,8 +97,12 @@ class SpecialDropViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 specialDropUiState = specialDropUiState.copy(
+                    isLoadingPreview = true
+                )
+
+                specialDropUiState = specialDropUiState.copy(
                     selectedNft = mashitRepo.getShopItem(id),
-                    isExpanded = true
+                    isLoadingPreview = false
                 )
             } catch (e: Exception) {
                 Timber.e(e, "Failed to fetch shop item details")
@@ -108,8 +112,7 @@ class SpecialDropViewModel @Inject constructor(
 
     private fun deselectNft() {
         specialDropUiState = specialDropUiState.copy(
-            selectedNft = null,
-            isExpanded = false
+            selectedNft = null
         )
     }
 

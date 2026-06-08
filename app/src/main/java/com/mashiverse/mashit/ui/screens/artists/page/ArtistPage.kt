@@ -278,21 +278,27 @@ fun ArtistPage(alias: String) {
         )
     }
 
-    artistPageUiState.selectedNft?.let { nft ->
-        ItemPreviewModal(
-            selectedNft = nft,
-            sheetState = previewState,
-            closeBottomSheet = { viewModel.processShopIntent(ShopIntent.OnNftDeselect) },
-            processImageIntent = { intent -> viewModel.processImageIntent(intent) }
-        ) {
-            MashiDetailsSection(
-                nft = nft,
-                scope = scope,
-                closeBottomSheet = { viewModel.processShopIntent(ShopIntent.OnNftDeselect) },
+    if (artistPageUiState.isPreviewLoading || artistPageUiState.selectedNft != null) {
+        if (artistPageUiState.isPreviewLoading) {
+            LoadingIndicator(text = "Loading")
+        }
+
+        artistPageUiState.selectedNft?.let { nft ->
+            ItemPreviewModal(
+                selectedNft = nft,
                 sheetState = previewState,
-                clientRef = clientRef,
-                processWeb3Intent = { intent -> viewModel.processWeb3Intent(intent) }
-            )
+                closeBottomSheet = { viewModel.processShopIntent(ShopIntent.OnNftDeselect) },
+                processImageIntent = { intent -> viewModel.processImageIntent(intent) }
+            ) {
+                MashiDetailsSection(
+                    nft = nft,
+                    scope = scope,
+                    closeBottomSheet = { viewModel.processShopIntent(ShopIntent.OnNftDeselect) },
+                    sheetState = previewState,
+                    clientRef = clientRef,
+                    processWeb3Intent = { intent -> viewModel.processWeb3Intent(intent) }
+                )
+            }
         }
     }
 

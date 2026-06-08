@@ -258,26 +258,30 @@ fun SpecialDrop(slug: String) {
             processImageIntent = { intent -> viewModel.processImageIntent(intent) },
             processWeb3Intent = { intent -> viewModel.processWeb3Intent(intent) },
         )
+    }
 
-        if (specialDropUiState.isExpanded) {
-            specialDropUiState.selectedNft?.let { nft ->
-                ItemPreviewModal(
-                    selectedNft = nft,
+    if (specialDropUiState.isLoadingPreview || specialDropUiState.selectedNft != null) {
+        if (specialDropUiState.isLoadingPreview) {
+            LoadingIndicator(text = "Loading")
+        }
+
+        specialDropUiState.selectedNft?.let { nft ->
+            ItemPreviewModal(
+                selectedNft = nft,
+                sheetState = previewState,
+                closeBottomSheet = { viewModel.processShopIntent(ShopIntent.OnNftDeselect) },
+                processImageIntent = { intent -> viewModel.processImageIntent(intent) }
+            ) {
+                MashiDetailsSection(
+                    nft = nft,
+                    scope = scope,
+                    closeBottomSheet = {
+                        viewModel.processShopIntent(ShopIntent.OnNftDeselect)
+                    },
                     sheetState = previewState,
-                    closeBottomSheet = { viewModel.processShopIntent(ShopIntent.OnNftDeselect) },
-                    processImageIntent = { intent -> viewModel.processImageIntent(intent) }
-                ) {
-                    MashiDetailsSection(
-                        nft = nft,
-                        scope = scope,
-                        closeBottomSheet = {
-                            viewModel.processShopIntent(ShopIntent.OnNftDeselect)
-                        },
-                        sheetState = previewState,
-                        clientRef = clientRef,
-                        processWeb3Intent = { intent -> viewModel.processWeb3Intent(intent) }
-                    )
-                }
+                    clientRef = clientRef,
+                    processWeb3Intent = { intent -> viewModel.processWeb3Intent(intent) }
+                )
             }
         }
     }
