@@ -40,8 +40,9 @@ class AlchemyRepo @Inject constructor(
 
                 ownedNfts.forEach { nft ->
                     val metadata = nft.raw.metadata
-                    val details = parseName(metadata.name)
+                    var details = parseName(metadata.name)
                     val description = metadata.description
+                    val tokenUri = nft.tokenUri.toFilebaseUri().toIpfsPartialUri()
 
                     val assets = metadata.assets
                     val (compositeUrl: String, traits: List<Trait>) = try {
@@ -49,7 +50,6 @@ class AlchemyRepo @Inject constructor(
                         val traits =  assets.toTraits()
                         url to traits
                     } catch (_: Exception) {
-                        val tokenUri = nft.tokenUri.toFilebaseUri().toIpfsPartialUri()
                         val ipfsMetadata = ipfsApi.getMetadataByIpfsUri(tokenUri)
 
                         val url = ipfsMetadata.image.fromIpfsScheme()
@@ -59,8 +59,12 @@ class AlchemyRepo @Inject constructor(
                                 type = TraitType.valueOf(asset.label.uppercase())
                             )
                         }
-                        Timber.tag("GG").d(url)
                         url to traits
+                    } finally {
+                        if (details.mint == -1) {
+                            val ipfsMetadata = ipfsApi.getMetadataByIpfsUri(tokenUri)
+                            details = parseName(ipfsMetadata.name)
+                        }
                     }
 
                     val currentOwned = Owned(
