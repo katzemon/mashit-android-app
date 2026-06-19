@@ -1,6 +1,7 @@
 package com.mashiverse.mashit.data.repos.mashit
 
 import com.mashiverse.mashit.data.models.mashi.Nft
+import com.mashiverse.mashit.data.models.mashi.NftDetails
 import com.mashiverse.mashit.data.models.mashi.Owned
 import com.mashiverse.mashit.data.models.mashi.Trait
 import com.mashiverse.mashit.data.models.mashi.TraitType
@@ -40,7 +41,7 @@ class AlchemyRepo @Inject constructor(
 
                 ownedNfts.forEach { nft ->
                     val metadata = nft.raw.metadata
-                    var details = parseName(metadata.name)
+                    var details = NftDetails("", "", -1)
                     val description = metadata.description
                     val tokenUri = nft.tokenUri.toFilebaseUri().toIpfsPartialUri()
 
@@ -48,6 +49,8 @@ class AlchemyRepo @Inject constructor(
                     val (compositeUrl: String, traits: List<Trait>) = try {
                         val url = metadata.image.fromIpfsScheme()
                         val traits =  assets.toTraits()
+                        details = parseName(metadata.name)
+
                         url to traits
                     } catch (_: Exception) {
                         val ipfsMetadata = ipfsApi.getMetadataByIpfsUri(tokenUri)
@@ -59,6 +62,8 @@ class AlchemyRepo @Inject constructor(
                                 type = TraitType.valueOf(asset.label.uppercase())
                             )
                         }
+                        details = parseName(ipfsMetadata.name)
+
                         url to traits
                     } finally {
                         if (details.mint == -1) {
