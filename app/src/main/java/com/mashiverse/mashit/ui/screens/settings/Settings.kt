@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -101,10 +102,11 @@ fun Settings() {
         )
         Column(
             modifier = Modifier
-                .fillMaxSize()
+                .align(Alignment.TopStart)
                 .padding(Padding),
         ) {
-            Row(modifier = Modifier.fillMaxWidth()) {
+            Row(modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center) {
                 OutlinedButton(
                     modifier = Modifier.width(256.dp),
                     colors = ButtonDefaults.outlinedButtonColors().copy(
@@ -125,6 +127,8 @@ fun Settings() {
                     )
                 }
             }
+
+            Spacer(modifier = Modifier.height(Padding))
 
             CheckRow(
                 title = "Opt in to new releases",

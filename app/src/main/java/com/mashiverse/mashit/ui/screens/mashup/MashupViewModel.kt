@@ -107,7 +107,7 @@ class MashupViewModel @Inject constructor(
                         mashupState.value = mashupState.value.copy(wallet = wallet)
                     }
                     val initialMashup =
-                        collectionRepo.getMashup("0x10F418D9DaEbad69767f2Ab67d613503376d2b61")
+                        collectionRepo.getMashup(wallet)
                     withContext(Dispatchers.Main) {
                         mashupState.value = mashupState.value.copy(
                             mashupDetails = initialMashup,
@@ -118,7 +118,7 @@ class MashupViewModel @Inject constructor(
 
                     try {
                         isSync.value = true
-                        collectionRepo.updateOwnedData("0x10F418D9DaEbad69767f2Ab67d613503376d2b61")
+                        collectionRepo.updateOwnedData(wallet)
                     } catch (e: Exception) {
                         Timber.tag("GG").e(e, "updateOwnedData failed")
                     } finally {

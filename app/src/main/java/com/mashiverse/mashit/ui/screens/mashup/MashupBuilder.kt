@@ -226,9 +226,11 @@ fun MashupBuilder(searchQuery: State<String>, openSettings: () -> Unit) {
             ) {
                 Box(modifier = Modifier.fillMaxWidth()) {
                     if (isSync) {
-                        SyncIndicator(modifier = Modifier
-                            .size(40.dp)
-                            .align(Alignment.TopStart))
+                        SyncIndicator(
+                            modifier = Modifier
+                                .size(40.dp)
+                                .align(Alignment.TopStart)
+                        )
                     }
 
                     MashupActions(
@@ -267,7 +269,7 @@ fun MashupBuilder(searchQuery: State<String>, openSettings: () -> Unit) {
                     modifier = Modifier
                         .wrapContentHeight()
                         .onSizeChanged { size ->
-                            height = with(density) { size.height.toDp() } - SmallPadding
+                            height = with(density) { size.height.toDp() } + 64.dp
                         },
                 ) {
                     if (mashupUiState.isCollectionReady) {

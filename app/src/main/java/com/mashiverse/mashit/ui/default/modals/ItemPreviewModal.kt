@@ -37,6 +37,7 @@ import com.mashiverse.mashit.ui.theme.LargeHolderHeight
 import com.mashiverse.mashit.ui.theme.LargeHolderWidth
 import com.mashiverse.mashit.ui.theme.MediumPadding
 import com.mashiverse.mashit.ui.theme.Padding
+import com.mashiverse.mashit.ui.theme.SmallPadding
 import com.mashiverse.mashit.ui.theme.Surface
 import com.mashiverse.mashit.utils.helpers.sys.detectScreenType
 

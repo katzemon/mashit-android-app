@@ -47,7 +47,7 @@ class CollectionViewModel @Inject constructor(
                         isReady.value = collectionFlow.first().isNotEmpty()
                         try {
                             isSync.value = true
-                            collectionRepo.updateOwnedData("0x10F418D9DaEbad69767f2Ab67d613503376d2b61")
+                            collectionRepo.updateOwnedData(wallet)
                         } catch (e: Exception) {
                             Timber.tag("GG").e(e, "updateOwnedData failed")
                         } finally {
