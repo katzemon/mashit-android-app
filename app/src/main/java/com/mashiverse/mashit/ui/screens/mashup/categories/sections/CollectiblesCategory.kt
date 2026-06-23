@@ -21,12 +21,12 @@ fun CollectiblesCategory(
     mashupDetails: MashupDetails,
     scope: CoroutineScope,
     processMashupIntent: (MashupIntent) -> Unit,
-    processImageIntent: (ImageIntent) -> Unit
+    processImageIntent: (ImageIntent) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     LazyColumn(
-        modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight(),
+        modifier = modifier
+            .fillMaxWidth(),
         state = state,
         verticalArrangement = Arrangement.spacedBy(Padding)
     ) {

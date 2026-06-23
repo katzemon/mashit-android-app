@@ -1,6 +1,7 @@
 package com.mashiverse.mashit.ui.nav.search
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardActions
@@ -13,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
@@ -35,29 +37,33 @@ fun SearchTextField(
         value = searchQuery,
         onValueChange = { input -> onSearchQueryChange.invoke(input) },
         leadingIcon = {
-            Icon(
-                modifier = Modifier
-                    .size(32.dp)
-                    .clickable {
-                        onIsSearchChange.invoke()
-                    },
-                imageVector = Icons.Default.Search,
-                contentDescription = "Search icon",
-                tint = ContentAccentColor
-            )
+            Box(modifier = Modifier.size(32.dp), contentAlignment = Alignment.Center) {
+                Icon(
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clickable {
+                            onIsSearchChange.invoke()
+                        },
+                    imageVector = Icons.Default.Search,
+                    contentDescription = "Search icon",
+                    tint = ContentAccentColor
+                )
+            }
         },
         trailingIcon = {
-            Icon(
-                modifier = Modifier
-                    .size(32.dp)
-                    .clickable {
-                        onIsSearchChange.invoke()
-                        onSearchQueryChange.invoke("")
-                    },
-                imageVector = Icons.Default.Clear,
-                tint = ContentAccentColor,
-                contentDescription = ""
-            )
+            Box(modifier = Modifier.size(32.dp), contentAlignment = Alignment.Center) {
+                Icon(
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clickable {
+                            onIsSearchChange.invoke()
+                            onSearchQueryChange.invoke("")
+                        },
+                    imageVector = Icons.Default.Clear,
+                    tint = ContentAccentColor,
+                    contentDescription = ""
+                )
+            }
         },
         keyboardOptions = KeyboardOptions(
             imeAction = ImeAction.Done

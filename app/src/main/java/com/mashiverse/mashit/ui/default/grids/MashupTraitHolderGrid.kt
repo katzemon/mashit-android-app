@@ -1,17 +1,21 @@
 package com.mashiverse.mashit.ui.default.grids
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.mashiverse.mashit.data.models.mashup.MashupTrait
 import com.mashiverse.mashit.data.states.mashup.MashupIntent
 import com.mashiverse.mashit.data.states.sys.ImageIntent
 import com.mashiverse.mashit.ui.screens.mashup.traits.MashupTraitHolder
+import com.mashiverse.mashit.ui.theme.SmallPadding
 
 @Composable
 fun MashupTraitHolderGrid(
@@ -40,6 +44,10 @@ fun MashupTraitHolderGrid(
                 processMashupIntent = processMashupIntent,
                 processImageIntent = processImageIntent
             )
+        }
+
+        item {
+            Spacer(Modifier.height(SmallPadding))
         }
     }
 }

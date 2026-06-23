@@ -12,13 +12,14 @@ import com.mashiverse.mashit.ui.theme.Padding
 
 @Composable
 fun TopNavBarActions(
+    modifier: Modifier = Modifier,
     isSearch: Boolean,
     onIsSearchChange: () -> Unit,
     searchQuery: String,
     onSearchQueryChange: (String) -> Unit,
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .padding(horizontal = Padding),
         verticalAlignment = Alignment.CenterVertically
     ) {

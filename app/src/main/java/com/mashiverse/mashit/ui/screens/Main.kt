@@ -9,12 +9,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.DismissibleNavigationDrawer
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -39,22 +37,22 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.mashiverse.mashit.data.models.sys.dialog.DialogContent
-import com.mashiverse.mashit.data.models.sys.screens.ScreenInfo
 import com.mashiverse.mashit.data.models.sys.wallet.WalletPreferences
 import com.mashiverse.mashit.nav.graphs.mainGraph
 import com.mashiverse.mashit.nav.routes.MainRoutes
 import com.mashiverse.mashit.ui.default.dialogs.Dialog
 import com.mashiverse.mashit.ui.default.modals.SignInModal
-import com.mashiverse.mashit.ui.nav.drawer.NavDrawer
-import com.mashiverse.mashit.ui.nav.top.TopNavBar
+import com.mashiverse.mashit.ui.nav.bottom.BottomNavBar
+import com.mashiverse.mashit.ui.screens.auth.Auth
 import com.mashiverse.mashit.ui.theme.Background
+import com.mashiverse.mashit.ui.theme.SmallPadding
 import com.mashiverse.mashit.utils.delegates.createAppKitDelegate
 import com.mashiverse.mashit.utils.helpers.sys.checkNotificationsPermission
 import com.mashiverse.mashit.utils.helpers.sys.detectScreenType
-import com.mashiverse.mashit.utils.helpers.sys.getCurrentTabName
 import com.reown.appkit.client.AppKit
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 @SuppressLint("RestrictedApi", "CoroutineCreationDuringComposition")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
@@ -68,6 +66,7 @@ fun Main(navController: NavHostController) {
     val ctx = LocalContext.current
 
     var isSignIn by remember { mutableStateOf(false) }
+    var isLurking by remember { mutableStateOf(false) }
 
     AppKit.setDelegate(
         createAppKitDelegate(
@@ -84,12 +83,6 @@ fun Main(navController: NavHostController) {
     val scope = rememberCoroutineScope()
 
     val backStack by navController.currentBackStackEntryAsState()
-    val tabName by remember {
-        derivedStateOf {
-            backStack.getCurrentTabName()
-        }
-    }
-
     val hasSearch by remember {
         derivedStateOf {
             backStack?.destination?.hasRoute<MainRoutes.Artists>() != true
@@ -122,9 +115,11 @@ fun Main(navController: NavHostController) {
         { isSearch = !isSearch }
     }
 
-    val walletPreferences = viewModel.walletPreferences.collectAsState(WalletPreferences(null))
+    val walletPreferences by viewModel.walletPreferences.collectAsState(WalletPreferences(null))
 
     val firstLaunch = viewModel.firstLaunchPreferences.collectAsState(false)
+
+    var isReady by remember { mutableStateOf(false) }
 
     LaunchedEffect(firstLaunch.value) {
         if (firstLaunch.value) {
@@ -137,10 +132,15 @@ fun Main(navController: NavHostController) {
         }
     }
 
+    LaunchedEffect(Unit) {
+        delay(50.milliseconds)
+        isReady = true
+    }
+
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { isGranted ->
-        viewModel.updateNotifications(isGranted)
+        //viewModel.updateNotifications(isGranted)
     }
 
     val onFirstLaunchDialogClose = {
@@ -148,7 +148,7 @@ fun Main(navController: NavHostController) {
             permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
         } else {
             val isGranted = checkNotificationsPermission(ctx)
-            viewModel.updateNotifications(isGranted)
+            //viewModel.updateNotifications(isGranted)
         }
         viewModel.setFirstLaunchCompleted()
         viewModel.clearDialog()
@@ -167,48 +167,24 @@ fun Main(navController: NavHostController) {
         clearSearchQuery.invoke()
     }
 
-    if (screenType != ScreenInfo.EXPANDED) {
-        DismissibleNavigationDrawer(
-            drawerState = drawerState,
-            drawerContent = {
-                NavDrawer(
-                    navController = navController,
-                    drawerState = drawerState,
-                    scope = scope,
-                    wallet = walletPreferences.value.wallet,
-                    onConnect = {
-                        if (walletPreferences.value.wallet != null) {
-                            viewModel.disconnect()
-                            AppKit.disconnect(
-                                onSuccess = { },
-                                onError = { }
-                            )
-                        } else {
-                            scope.launch(Dispatchers.Main) { drawerState.close() }
-                                .invokeOnCompletion {
-                                    isSignIn = true
-                                }
-                        }
-                    },
-                )
-            },
-            gesturesEnabled = true
-        ) {
+    val mashup by remember { viewModel.mashup }
+
+    if (isReady) {
+        if (walletPreferences.wallet != null || isLurking) {
             Scaffold(
                 modifier = Modifier.fillMaxSize(),
                 containerColor = Background,
-                topBar = {
-                    TopNavBar(
-                        tabName = tabName,
-                        drawerState = drawerState,
-                        scope = scope,
+                bottomBar = {
+                    BottomNavBar(
+                        navController = navController,
+                        mashup = mashup,
                         searchQuery = searchQuery.value,
                         onSearchQueryChange = onSearchQueryChange,
                         isSearch = isSearch,
                         onIsSearchChange = onIsSearchChange,
                         hasSearch = hasSearch,
+                        processImageIntent = { intent -> viewModel.processImageIntent(intent) }
                     )
-
                 }
             ) { paddingValues ->
                 NavHost(
@@ -217,6 +193,7 @@ fun Main(navController: NavHostController) {
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(paddingValues)
+                        .padding(top = SmallPadding)
                 ) {
                     mainGraph(
                         searchQuery = searchQuery,
@@ -237,103 +214,30 @@ fun Main(navController: NavHostController) {
                     )
                 }
             }
-
-            if (isSignIn) {
-                SignInModal(
-                    sheetState = signInState,
-                    onDismissRequest = {
-                        isSignIn = false
-                    }
-                )
-            }
-
-            if (firstLaunch.value && dialogContent != null) {
-                Dialog(dialogContent!!) {
-                    onFirstLaunchDialogClose.invoke()
-                }
-            }
-        }
-    } else {
-        Row {
-            NavDrawer(
-                navController = navController,
-                drawerState = drawerState,
-                scope = scope,
-                wallet = walletPreferences.value.wallet,
-                onConnect = {
-                    if (walletPreferences.value.wallet != null) {
-                        viewModel.disconnect()
-                        AppKit.disconnect(
-                            onSuccess = { },
-                            onError = { }
-                        )
-                    } else {
-                        scope.launch(Dispatchers.Main) { drawerState.close() }.invokeOnCompletion {
-                            isSignIn = true
-                        }
-                    }
+        } else {
+            Auth(
+                onLurking = {
+                    isLurking = true
                 },
+                onAuth = {
+                    isSignIn = true
+                }
             )
+        }
+    }
 
-            Scaffold(
-                modifier = Modifier.fillMaxSize(),
-                containerColor = Background,
-                topBar = {
-                    TopNavBar(
-                        tabName = tabName,
-                        drawerState = drawerState,
-                        scope = scope,
-                        searchQuery = searchQuery.value,
-                        onSearchQueryChange = onSearchQueryChange,
-                        isSearch = isSearch,
-                        onIsSearchChange = onIsSearchChange,
-                        hasSearch = hasSearch,
-                        isTablet = true
-                    )
-
-                }
-            ) { paddingValues ->
-                NavHost(
-                    navController = navController,
-                    startDestination = MainRoutes.Shop(listingId = null),
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues)
-                ) {
-                    mainGraph(
-                        searchQuery = searchQuery,
-                        clearSearchQuery = clearSearchQuery
-                    )
-                }
-
-                if (drawerState.isOpen) {
-                    Box(
-                        Modifier
-                            .fillMaxSize()
-                            .clickable(
-                                interactionSource = remember { MutableInteractionSource() },
-                                indication = null
-                            ) {
-                                scope.launch { drawerState.close() }
-                            }
-                    )
-                }
+    if (isSignIn) {
+        SignInModal(
+            sheetState = signInState,
+            onDismissRequest = {
+                isSignIn = false
             }
+        )
+    }
 
-            if (isSignIn) {
-                SignInModal(
-                    sheetState = signInState,
-                    onDismissRequest = {
-                        isSignIn = false
-                    }
-                )
-            }
-
-            if (firstLaunch.value && dialogContent != null) {
-                Dialog(dialogContent!!) {
-                    onFirstLaunchDialogClose.invoke()
-                }
-            }
+    if ((isLurking || walletPreferences.wallet != null) && firstLaunch.value && dialogContent != null) {
+        Dialog(dialogContent!!) {
+            onFirstLaunchDialogClose.invoke()
         }
     }
 }

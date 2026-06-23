@@ -8,6 +8,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
@@ -75,14 +76,16 @@ fun SearchBar(
         horizontalArrangement = Arrangement.Start,
     ) {
         if (width.value <= SearchHeight * 4) {
-            Icon(
-                modifier = Modifier
-                    .size(32.dp)
-                    .clickable { onIsSearchChange.invoke() },
-                imageVector = Icons.Default.Search,
-                contentDescription = "Search icon",
-                tint = ContentAccentColor
-            )
+            Box(modifier = Modifier.size(32.dp), contentAlignment = Alignment.Center) {
+                Icon(
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clickable { onIsSearchChange.invoke() },
+                    imageVector = Icons.Default.Search,
+                    contentDescription = "Search icon",
+                    tint = ContentAccentColor
+                )
+            }
         } else {
             SearchTextField(
                 width = width.value,

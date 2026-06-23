@@ -15,7 +15,7 @@ import com.mashiverse.mashit.nav.routes.ShopRoutes
 fun Shop(
     searchQuery: State<String>,
     clearSearchQuery: () -> Unit,
-    listingId: String?
+    listingId: String?,
 ) {
     val innerNavController = rememberNavController()
 
@@ -31,7 +31,7 @@ fun Shop(
         shopGraph(
             clearSearchQuery = clearSearchQuery,
             searchQuery = searchQuery,
-            navigateToDrop = navigateToDrop
+            navigateToDrop = navigateToDrop,
         )
     }
 }

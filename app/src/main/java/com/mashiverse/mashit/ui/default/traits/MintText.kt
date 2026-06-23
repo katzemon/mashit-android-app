@@ -20,7 +20,7 @@ fun MintText(
     mint: Int,
     fontSize: Int? = null
 ) {
-    val size = fontSize?.sp ?: 12.sp
+    val size = fontSize?.sp ?: 14.sp
 
     Box(
         modifier = modifier,

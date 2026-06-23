@@ -37,10 +37,10 @@ fun Sorting(
     var isOpened by remember { mutableStateOf(false) }
     var selected by remember { mutableIntStateOf(0) }
 
-    Row {
+    Row() {
         IconButton(
             modifier = Modifier
-                .padding(bottom = 16.dp, end = 16.dp)
+                .padding(end = 16.dp)
                 .size(32.dp),
             colors = IconButtonDefaults.iconButtonColors().copy(
                 containerColor = Color.Transparent,

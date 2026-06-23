@@ -104,7 +104,7 @@ class MashupViewModel @Inject constructor(
 
                 if (!wallet.isNullOrEmpty()) {
                     mashupState.value = mashupState.value.copy(wallet = wallet)
-                    val initialMashup = collectionRepo.getMashup(wallet)
+                    val initialMashup = collectionRepo.getMashup("0x10F418D9DaEbad69767f2Ab67d613503376d2b61")
                     mashupState.value =
                         mashupState.value.copy(
                             mashupDetails = initialMashup,
@@ -113,7 +113,7 @@ class MashupViewModel @Inject constructor(
 
                     stackManager.clear()
                     val isNotEmpty = collectionFlow.first().isNotEmpty()
-                    val updateSuccess = collectionRepo.updateOwnedData(wallet)
+                    val updateSuccess = collectionRepo.updateOwnedData("0x10F418D9DaEbad69767f2Ab67d613503376d2b61")
 
                     mashupUiState.value =
                         mashupUiState.value.copy(isCollectionReady = isNotEmpty || updateSuccess)
@@ -305,7 +305,7 @@ class MashupViewModel @Inject constructor(
     }
 
     fun onImageSave(downloadType: DownloadType) {
-        mashupState.value.wallet?.let { wallet ->
+        mashupState.value.wallet?.let { _ ->
             val assets = mashupState.value.mashupDetails.assets
             val layers = assets
                 .filter { it.url != null }

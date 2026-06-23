@@ -32,8 +32,6 @@ class MainActivity : ComponentActivity() {
             navController = rememberNavController()
 
             MashitTheme {
-                navController = rememberNavController()
-
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -47,6 +45,8 @@ class MainActivity : ComponentActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        navController?.handleDeepLink(intent)
+        try {
+            navController?.handleDeepLink(intent)
+        } catch (_: Exception) { }
     }
 }

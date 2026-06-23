@@ -31,7 +31,7 @@ fun CategorySelector(
     mashupUiState: MashupUiState,
     processMashupIntent: (MashupIntent) -> Unit,
     gridState: LazyGridState,
-    scope: CoroutineScope
+    scope: CoroutineScope,
 ) {
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(SmallPadding)

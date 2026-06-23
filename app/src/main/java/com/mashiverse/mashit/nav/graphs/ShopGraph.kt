@@ -21,7 +21,7 @@ fun NavGraphBuilder.shopGraph(
             searchQuery = searchQuery,
             clearSearchQuery = clearSearchQuery,
             listingId = listingId,
-            navigateToDrop = navigateToDrop
+            navigateToDrop = navigateToDrop,
         )
     }
 

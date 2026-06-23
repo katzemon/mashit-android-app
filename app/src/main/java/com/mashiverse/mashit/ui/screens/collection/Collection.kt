@@ -2,7 +2,9 @@ package com.mashiverse.mashit.ui.screens.collection
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -19,6 +21,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.mashiverse.mashit.data.models.mashi.Nft
 import com.mashiverse.mashit.data.models.mashi.Owned
@@ -33,6 +36,7 @@ import com.mashiverse.mashit.ui.default.modals.MashiDetailsSection
 import com.mashiverse.mashit.ui.default.sorting.Sorting
 import com.mashiverse.mashit.ui.theme.MediumPadding
 import com.mashiverse.mashit.ui.theme.Padding
+import com.mashiverse.mashit.ui.theme.SmallPadding
 import com.mashiverse.mashit.utils.helpers.nft.sortNfts
 import com.mashiverse.mashit.utils.helpers.sys.detectScreenType
 import kotlinx.coroutines.flow.map
@@ -118,12 +122,8 @@ fun Collection(searchQuery: State<String>) {
                 .padding(horizontal = Padding),
         ) {
             if (isReady) {
-                Sorting(onSortChange = { type ->
-                    sortType = type
-                    scope.launch { lazyGridState.animateScrollToItem(0) }
-                })
-
                 MintedTraitGrid(
+                    modifier = Modifier.weight(1f),
                     items = sortedNfts,
                     state = lazyGridState,
                     spacedByHoriz = MediumPadding,
@@ -133,6 +133,15 @@ fun Collection(searchQuery: State<String>) {
                 ) { nft ->
                     selectMashi.invoke(nft)
                 }
+
+                Spacer(modifier = Modifier.height(SmallPadding))
+
+                Sorting(onSortChange = { type ->
+                    sortType = type
+                    scope.launch { lazyGridState.animateScrollToItem(0) }
+                })
+
+                Spacer(modifier = Modifier.height(SmallPadding))
             } else {
                 LoadingIndicator(text = "Loading")
             }

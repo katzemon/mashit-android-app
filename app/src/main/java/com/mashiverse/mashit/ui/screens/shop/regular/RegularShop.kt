@@ -38,7 +38,7 @@ fun RegularShop(
     searchQuery: State<String>,
     clearSearchQuery: () -> Unit,
     listingId: String?,
-    navigateToDrop: (String) -> Unit
+    navigateToDrop: (String) -> Unit,
 ) {
     var searchQuery by remember(searchQuery.value) {
         mutableStateOf(searchQuery.value)

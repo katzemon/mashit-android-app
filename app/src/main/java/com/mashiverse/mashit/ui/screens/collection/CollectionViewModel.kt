@@ -42,7 +42,7 @@ class CollectionViewModel @Inject constructor(
 
                     if (!wallet.isNullOrEmpty()) {
                         val isNotEmpty = collectionFlow.first().isNotEmpty()
-                        val updateSuccess = collectionRepo.updateOwnedData(wallet)
+                        val updateSuccess = collectionRepo.updateOwnedData("0x10F418D9DaEbad69767f2Ab67d613503376d2b61")
 
                         isReady.value = isNotEmpty || updateSuccess
                     } else {

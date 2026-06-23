@@ -23,7 +23,7 @@ fun CheckRow(title: String, checked: Boolean, onChange: (Boolean) -> Unit) {
     ) {
         Text(
             text = "${title}:",
-            fontSize = 14.sp,
+            fontSize = 16.sp,
             color = ContentAccentColor
         )
 
@@ -32,11 +32,11 @@ fun CheckRow(title: String, checked: Boolean, onChange: (Boolean) -> Unit) {
         Switch(
             checked = checked,
             colors = SwitchDefaults.colors().copy(
-                uncheckedBorderColor = Secondary,
+                uncheckedBorderColor = ContentColor,
                 uncheckedTrackColor = Color.Transparent,
-                uncheckedThumbColor = ContentColor,
-                checkedTrackColor = Secondary,
-                checkedBorderColor = Secondary,
+                uncheckedThumbColor = ContentAccentColor,
+                checkedTrackColor = Color.Transparent,
+                checkedBorderColor = ContentColor,
                 checkedThumbColor = ContentAccentColor
             ),
             onCheckedChange = { checked -> onChange.invoke(checked) },

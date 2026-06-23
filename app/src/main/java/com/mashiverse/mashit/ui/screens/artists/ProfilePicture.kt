@@ -8,7 +8,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.mashiverse.mashit.data.models.artists.ArtistMashup
 import com.mashiverse.mashit.data.states.sys.ImageIntent
 import com.mashiverse.mashit.ui.default.images.DefaultImage
@@ -20,12 +22,14 @@ fun ProfilePicture(
     onClick: () -> Unit,
     artistMashup: ArtistMashup,
     processImageIntent: (ImageIntent) -> Unit,
+    size: Dp = 80.dp,
+    borderWidth: Dp = 2.dp
 ) {
     Box(
         modifier = modifier
-            .size(80.dp)
+            .size(size)
             .border(
-                width = 2.dp,
+                width = (borderWidth),
                 color = ContentAccentColor,
                 shape = CircleShape
             )

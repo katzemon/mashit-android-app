@@ -36,39 +36,7 @@ fun Drops(
     specialDrops: List<DropDetails>,
     navigateToDrop: (String) -> Unit
 ) {
-    var isInfo by remember { mutableStateOf(false) }
-
     Column {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                modifier = Modifier
-                    .size(24.dp)
-                    .clickable {
-                        isInfo = !isInfo
-                    },
-                imageVector = Icons.Outlined.Info,
-                contentDescription = null,
-                tint = ContentColor
-            )
-
-            Spacer(modifier = Modifier.width(ExtraSmallPadding))
-
-            AnimatedVisibility(isInfo) {
-                Text(
-                    text = "Can be disabled in settings",
-                    fontSize = 12.sp,
-                    color = ContentColor
-                )
-            }
-
-            Spacer(modifier = Modifier.weight(1F))
-        }
-
-        Spacer(modifier = Modifier.height(SmallPadding))
-
         LazyRow(
             modifier = Modifier
                 .fillMaxWidth()
@@ -101,14 +69,5 @@ fun Drops(
         }
 
         Spacer(modifier = Modifier.height(Padding))
-
-//        Spacer(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .height(1.dp)
-//                .background(Color.DarkGray)
-//        )
-//
-//        Spacer(modifier = Modifier.height(Padding))
     }
 }

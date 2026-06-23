@@ -2,14 +2,17 @@ package com.mashiverse.mashit.ui.screens.artists.preview
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.paging.LoadState
@@ -20,6 +23,7 @@ import com.mashiverse.mashit.ui.default.indicators.LoadingIndicator
 import com.mashiverse.mashit.ui.default.indicators.SectionLoading
 import com.mashiverse.mashit.ui.default.indicators.SectionRefresh
 import com.mashiverse.mashit.ui.theme.Padding
+import com.mashiverse.mashit.ui.theme.SmallPadding
 
 @Composable
 fun ArtistsPreview(
@@ -79,6 +83,10 @@ fun ArtistsPreview(
                             onRetry = { artists.retry() }
                         )
                     }
+                }
+
+                item(span = { GridItemSpan(maxLineSpan) }) {
+                    Spacer(Modifier.height(0.dp))
                 }
             }
         }

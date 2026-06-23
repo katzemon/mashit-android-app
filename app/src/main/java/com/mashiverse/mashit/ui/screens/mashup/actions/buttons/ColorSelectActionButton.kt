@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fitInside
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -22,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
+import com.mashiverse.mashit.ui.theme.Secondary
 import com.mashiverse.mashit.ui.theme.SmallIconSize
 
 @Composable
@@ -32,8 +34,7 @@ fun ColorSelectActionButton(
 
     Box(
         modifier = Modifier
-            .width(56.dp)
-            .height(32.dp)
+            .size(40.dp)
             .clip(RoundedCornerShape(90))
             .background(
                 brush = Brush.sweepGradient(
@@ -45,17 +46,17 @@ fun ColorSelectActionButton(
                         Color.Red
                     ).reversed(),
                     center = Offset(
-                        x = with(density) { 28.dp.toPx() },
-                        y = with(density) { 16.dp.toPx() })
+                        x = with(density) { 18.dp.toPx() },
+                        y = with(density) { 18.dp.toPx() })
                 )
             )
-            .border(0.5.dp, Color.White, RoundedCornerShape(90))
+            .background(Color.Black.copy(alpha = 0.5F))
+//            .border(1.dp, Secondary, RoundedCornerShape(90))
             .clickable { onColor.invoke() }
     ) {
         Icon(
             modifier = Modifier
                 .align(Alignment.Center)
-                .wrapContentSize(unbounded = true)
                 .size(SmallIconSize),
             imageVector = Icons.Default.Brush,
             tint = ContentAccentColor,

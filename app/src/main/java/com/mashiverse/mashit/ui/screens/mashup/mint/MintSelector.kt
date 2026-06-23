@@ -26,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -38,12 +39,13 @@ import com.mashiverse.mashit.ui.theme.SmallPadding
 
 @Composable
 fun MintSelector(
+    modifier: Modifier = Modifier,
     mints: List<Int>,
     selectedMint: Int?,
     onMintSelect: (Int?) -> Unit
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
         var isVisible by remember { mutableStateOf(false) }
@@ -70,6 +72,7 @@ fun MintSelector(
             visible = isVisible
         ) {
             LazyRow(
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(SmallPadding)
             ) {
                 item {

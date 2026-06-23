@@ -1,8 +1,10 @@
 package com.mashiverse.mashit.ui.default.grids
 
+import android.widget.Space
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -32,6 +34,7 @@ import com.mashiverse.mashit.ui.default.indicators.SectionRefresh
 import com.mashiverse.mashit.ui.screens.shop.regular.ShopItem
 import com.mashiverse.mashit.ui.theme.ContentColor
 import com.mashiverse.mashit.ui.theme.Secondary
+import com.mashiverse.mashit.ui.theme.SmallPadding
 
 @Composable
 fun ShopItemGrid(
@@ -135,6 +138,10 @@ fun ShopItemGrid(
             item(span = { GridItemSpan(maxLineSpan) }) {
                 SectionRefresh(onRetry = { items.retry() })
             }
+        }
+
+        item(span = { GridItemSpan(maxLineSpan) }) {
+            Spacer(Modifier.height(0.dp))
         }
     }
 }

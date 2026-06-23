@@ -2,18 +2,25 @@ package com.mashiverse.mashit.ui.screens.mashup
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -24,7 +31,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
@@ -50,6 +59,7 @@ import com.mashiverse.mashit.ui.screens.mashup.preview.MashupPreview
 import com.mashiverse.mashit.ui.theme.MediumPadding
 import com.mashiverse.mashit.ui.theme.Padding
 import com.mashiverse.mashit.ui.theme.SmallPadding
+import com.mashiverse.mashit.ui.theme.Surface
 import com.mashiverse.mashit.ui.theme.XLHolderHeight
 import com.mashiverse.mashit.ui.theme.XLHolderWidth
 import com.mashiverse.mashit.utils.color.helpers.toHexColor
@@ -117,7 +127,7 @@ fun Mashup(searchQuery: State<String>) {
         mashupState.nfts.forEach { nft ->
             tempData.add(
                 MintData(
-                    compositeUrl = nft.traits?.first{ it.type == TraitType.BACKGROUND }?.url ?: "",
+                    compositeUrl = nft.traits?.first { it.type == TraitType.BACKGROUND }?.url ?: "",
                     mints = nft.owned!!.map { it.mint }
                 )
             )
@@ -145,8 +155,10 @@ fun Mashup(searchQuery: State<String>) {
     }
 
     LaunchedEffect(mashupState.mashupDetails) {
-        val selectedBackground = mashupState.mashupDetails.assets.first { it.type == TraitType.BACKGROUND }.url ?: ""
-        val selectedNft = nfts.firstOrNull { it.traits?.firstOrNull { it.url == selectedBackground } != null }
+        val selectedBackground =
+            mashupState.mashupDetails.assets.first { it.type == TraitType.BACKGROUND }.url ?: ""
+        val selectedNft =
+            nfts.firstOrNull { it.traits?.firstOrNull { it.url == selectedBackground } != null }
 
         if (selectedNft == null) {
             viewModel.updateName(null)
@@ -209,26 +221,37 @@ fun Mashup(searchQuery: State<String>) {
                     .fillMaxSize()
                     .padding(horizontal = Padding)
             ) {
-                MashupActions(
-                    mashupDetails = mashupState.mashupDetails.copy(colors = mashupState.colors),
-                    modifier = Modifier
-                        .height(XLHolderHeight)
-                        .width(XLHolderWidth)
-                        .clickable { viewModel.processActionsIntent(ActionsIntent.OnPreview) },
-                    holderWidth = XLHolderWidth,
-                    processImageIntent = { intent -> viewModel.processImageIntent(intent) },
-                    processActionsIntent = { intent -> viewModel.processActionsIntent(intent) },
-                    selectedMint = mashupState.selectedMint
-                )
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    MashupActions(
+                        mashupDetails = mashupState.mashupDetails.copy(colors = mashupState.colors),
+                        modifier = Modifier
+                            .height(XLHolderHeight)
+                            .width(XLHolderWidth)
+                            .clickable { viewModel.processActionsIntent(ActionsIntent.OnPreview) },
+                        holderWidth = XLHolderWidth,
+                        processImageIntent = { intent -> viewModel.processImageIntent(intent) },
+                        processActionsIntent = { intent -> viewModel.processActionsIntent(intent) },
+                        selectedMint = mashupState.selectedMint
+                    )
 
-                Spacer(Modifier.height(SmallPadding))
-
-                MintSelector(
-                    mints = availableMints,
-                    selectedMint = mashupState.selectedMint
-                ) { mint ->
-                    viewModel.updateSelectedMint(mint)
+                    IconButton(
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .size(40.dp),
+                        colors = IconButtonDefaults.iconButtonColors()
+                            .copy(containerColor = Surface),
+                        onClick = {}) {
+                        Icon(
+                            imageVector = Icons.Default.MoreVert,
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
                 }
+
+                Spacer(modifier = Modifier.height(SmallPadding))
+
 
                 Column(
                     modifier = Modifier
@@ -237,30 +260,10 @@ fun Mashup(searchQuery: State<String>) {
                             height = with(density) { size.height.toDp() } - SmallPadding
                         },
                 ) {
-                    Spacer(Modifier.height(SmallPadding))
-
-                    Row {
-                        Sorting { type ->
-                            viewModel.changeSortType(
-                                scope = scope,
-                                vState = collectiblesVState,
-                                gState = traitsGridState,
-                                type = type
-                            )
-                        }
-
-                        CategorySelector(
-                            mashupState = mashupState,
-                            mashupUiState = mashupUiState,
-                            processMashupIntent = { intent -> viewModel.processMashupIntent(intent) },
-                            gridState = traitsGridState,
-                            scope = scope
-                        )
-                    }
-
                     if (mashupUiState.isCollectionReady) {
                         if (mashupUiState.isCollectibles) {
                             CollectiblesCategory(
+                                modifier = Modifier.weight(1F),
                                 nfts = sortedNfts,
                                 mashupDetails = mashupState.mashupDetails,
                                 state = collectiblesVState,
@@ -274,7 +277,7 @@ fun Mashup(searchQuery: State<String>) {
                             )
                         } else {
                             MashupTraitHolderGrid(
-                                modifier = Modifier.fillMaxHeight(),
+                                modifier = Modifier.weight(1f),
                                 items = traits,
                                 selectedTraitUrl = selectedTraitUrl,
                                 state = traitsGridState,
@@ -287,6 +290,41 @@ fun Mashup(searchQuery: State<String>) {
                                         intent
                                     )
                                 }
+                            )
+                        }
+
+                        Row(
+                            modifier = Modifier
+                                .padding(vertical = SmallPadding),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            MintSelector(
+                                modifier = Modifier,
+                                mints = availableMints,
+                                selectedMint = mashupState.selectedMint
+                            ) { mint ->
+                                viewModel.updateSelectedMint(mint)
+                            }
+
+                            Sorting { type ->
+                                viewModel.changeSortType(
+                                    scope = scope,
+                                    vState = collectiblesVState,
+                                    gState = traitsGridState,
+                                    type = type
+                                )
+                            }
+
+                            CategorySelector(
+                                mashupState = mashupState,
+                                mashupUiState = mashupUiState,
+                                processMashupIntent = { intent ->
+                                    viewModel.processMashupIntent(
+                                        intent
+                                    )
+                                },
+                                gridState = traitsGridState,
+                                scope = scope
                             )
                         }
                     } else {

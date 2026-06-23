@@ -1,7 +1,9 @@
 package com.mashiverse.mashit.ui.default.grids
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -11,9 +13,11 @@ import androidx.compose.ui.unit.Dp
 import com.mashiverse.mashit.data.models.mashi.Nft
 import com.mashiverse.mashit.data.states.sys.ImageIntent
 import com.mashiverse.mashit.ui.default.traits.MintedTrait
+import com.mashiverse.mashit.ui.theme.SmallPadding
 
 @Composable
 fun MintedTraitGrid(
+    modifier: Modifier = Modifier,
     items: List<Nft>,
     state: LazyGridState,
     spacedByVert: Dp,
@@ -24,7 +28,7 @@ fun MintedTraitGrid(
 ) {
     LazyVerticalGrid(
         state = state,
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(spacedByVert),
         horizontalArrangement = Arrangement.spacedBy(spacedByHoriz),
         columns = GridCells.Fixed(columns)
@@ -38,6 +42,10 @@ fun MintedTraitGrid(
                 processImageIntent = processImageIntent,
                 mint = items[i].owned!![0].mint
             )
+        }
+
+        item {
+            Spacer(Modifier.height(SmallPadding))
         }
     }
 }
