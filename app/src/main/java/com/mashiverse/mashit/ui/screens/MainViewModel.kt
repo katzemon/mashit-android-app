@@ -5,7 +5,6 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.messaging.FirebaseMessaging
 import com.mashiverse.mashit.data.local.db.entities.ImageTypeEntity
 import com.mashiverse.mashit.data.models.mashup.MashupDetails
 import com.mashiverse.mashit.data.models.sys.dialog.DialogContent
@@ -18,7 +17,6 @@ import com.mashiverse.mashit.data.states.sys.ImageIntent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -52,7 +50,6 @@ class MainViewModel @Inject constructor(
 
                 if (!wallet.isNullOrEmpty()) {
                     mashup.value = collectionRepo.getMashup(wallet)
-                    collectionRepo.updateOwnedData(wallet)
                 }
             }
         }
@@ -88,27 +85,9 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun disconnect() {
-        viewModelScope.launch(Dispatchers.IO) {
-            dataStoreRepo.removeWallet()
-        }
-    }
-
     fun setFirstLaunchCompleted() {
         viewModelScope.launch(Dispatchers.IO) {
             dataStoreRepo.setFirstLaunchCompleted()
-        }
-    }
-
-    fun updateNotifications(enabled: Boolean) {
-        viewModelScope.launch(Dispatchers.IO) {
-            if (enabled) {
-                FirebaseMessaging.getInstance().subscribeToTopic("all_users")
-            } else {
-                FirebaseMessaging.getInstance().unsubscribeFromTopic("all_users")
-            }
-
-            dataStoreRepo.updateNotifications(enabled)
         }
     }
 }

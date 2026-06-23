@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -27,6 +28,8 @@ class CollectionViewModel @Inject constructor(
 ) : ViewModel() {
     val walletPreferences = dataStoreRepo.walletFlow
     val collectionFlow = collectionRepo.collectionFlow
+
+    val isSync = mutableStateOf(false)
 
     val isReady = mutableStateOf(false)
 
@@ -41,10 +44,16 @@ class CollectionViewModel @Inject constructor(
                     val wallet = prefs.wallet
 
                     if (!wallet.isNullOrEmpty()) {
-                        val isNotEmpty = collectionFlow.first().isNotEmpty()
-                        val updateSuccess = collectionRepo.updateOwnedData("0x10F418D9DaEbad69767f2Ab67d613503376d2b61")
-
-                        isReady.value = isNotEmpty || updateSuccess
+                        isReady.value = collectionFlow.first().isNotEmpty()
+                        try {
+                            isSync.value = true
+                            collectionRepo.updateOwnedData("0x10F418D9DaEbad69767f2Ab67d613503376d2b61")
+                        } catch (e: Exception) {
+                            Timber.tag("GG").e(e, "updateOwnedData failed")
+                        } finally {
+                            isSync.value = false
+                            isReady.value = true
+                        }
                     } else {
                         collectionRepo.clearOwned()
                     }

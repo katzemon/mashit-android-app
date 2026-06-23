@@ -1,11 +1,16 @@
 package com.mashiverse.mashit.ui.screens.collection
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -19,6 +24,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
@@ -28,9 +34,12 @@ import com.mashiverse.mashit.data.models.mashi.Owned
 import com.mashiverse.mashit.data.models.mashi.SortType
 import com.mashiverse.mashit.data.models.mashi.mappers.fromEntities
 import com.mashiverse.mashit.data.models.sys.wallet.WalletPreferences
+import com.mashiverse.mashit.ui.default.buttons.DiscordButton
+import com.mashiverse.mashit.ui.default.buttons.RedditButton
 import com.mashiverse.mashit.ui.default.grids.MintedTraitGrid
 import com.mashiverse.mashit.ui.default.indicators.LoadingIndicator
 import com.mashiverse.mashit.ui.default.indicators.NotConnected
+import com.mashiverse.mashit.ui.default.indicators.SyncIndicator
 import com.mashiverse.mashit.ui.default.modals.ItemPreviewModal
 import com.mashiverse.mashit.ui.default.modals.MashiDetailsSection
 import com.mashiverse.mashit.ui.default.sorting.Sorting
@@ -114,36 +123,56 @@ fun Collection(searchQuery: State<String>) {
         isBottomSheet = false
     }
 
-
     if (walletPreferences.value.wallet != null) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = Padding),
-        ) {
-            if (isReady) {
-                MintedTraitGrid(
-                    modifier = Modifier.weight(1f),
-                    items = sortedNfts,
-                    state = lazyGridState,
-                    spacedByHoriz = MediumPadding,
-                    spacedByVert = MediumPadding,
-                    columns = screenType.collectionColumns,
-                    processImageIntent = { intent -> viewModel.processImageIntent(intent) },
-                ) { nft ->
-                    selectMashi.invoke(nft)
+        Box {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = Padding),
+            ) {
+                if (isReady) {
+                    MintedTraitGrid(
+                        modifier = Modifier.weight(1f),
+                        items = sortedNfts,
+                        state = lazyGridState,
+                        spacedByHoriz = MediumPadding,
+                        spacedByVert = MediumPadding,
+                        columns = screenType.collectionColumns,
+                        processImageIntent = { intent -> viewModel.processImageIntent(intent) },
+                    ) { nft ->
+                        selectMashi.invoke(nft)
+                    }
+
+                    Spacer(modifier = Modifier.height(SmallPadding))
+
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        Sorting(onSortChange = { type ->
+                            sortType = type
+                            scope.launch { lazyGridState.animateScrollToItem(0) }
+                        })
+
+                        Spacer(modifier = Modifier.weight(1F))
+
+                        DiscordButton()
+
+                        Spacer(modifier = Modifier.width(SmallPadding))
+
+                        RedditButton()
+                    }
+
+                    Spacer(modifier = Modifier.height(SmallPadding))
+                } else {
+                    LoadingIndicator(text = "Loading")
                 }
+            }
 
-                Spacer(modifier = Modifier.height(SmallPadding))
-
-                Sorting(onSortChange = { type ->
-                    sortType = type
-                    scope.launch { lazyGridState.animateScrollToItem(0) }
-                })
-
-                Spacer(modifier = Modifier.height(SmallPadding))
-            } else {
-                LoadingIndicator(text = "Loading")
+            if (viewModel.isSync.value) {
+                SyncIndicator(
+                    modifier = Modifier
+                        .padding(start = Padding)
+                        .size(40.dp)
+                        .align(Alignment.TopStart)
+                )
             }
         }
 

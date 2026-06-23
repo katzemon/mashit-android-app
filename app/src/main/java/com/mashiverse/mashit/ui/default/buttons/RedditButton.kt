@@ -23,7 +23,7 @@ fun RedditButton() {
 
     IconButton(
         modifier = Modifier
-            .size(40.dp)
+            .size(32.dp)
             .height(ContentContainerHeight),
         onClick = { openSocialLink(context, uri) },
         colors = IconButtonDefaults.iconButtonColors().copy(

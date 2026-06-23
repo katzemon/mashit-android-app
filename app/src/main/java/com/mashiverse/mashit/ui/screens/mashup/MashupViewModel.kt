@@ -40,14 +40,12 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import timber.log.Timber
 import javax.inject.Inject
-import kotlin.collections.map
 
 @HiltViewModel
 class MashupViewModel @Inject constructor(
@@ -71,6 +69,9 @@ class MashupViewModel @Inject constructor(
 
     private val walletFlow = dataStoreRepo.walletFlow
     private val collectionFlow = collectionRepo.collectionFlow
+
+    var isSync = mutableStateOf(false)
+        private set
 
     init {
         observeWallet()
@@ -101,24 +102,32 @@ class MashupViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             walletFlow.distinctUntilChanged().collect { prefs ->
                 val wallet = prefs.wallet
-
                 if (!wallet.isNullOrEmpty()) {
-                    mashupState.value = mashupState.value.copy(wallet = wallet)
-                    val initialMashup = collectionRepo.getMashup("0x10F418D9DaEbad69767f2Ab67d613503376d2b61")
-                    mashupState.value =
-                        mashupState.value.copy(
+                    withContext(Dispatchers.Main) {
+                        mashupState.value = mashupState.value.copy(wallet = wallet)
+                    }
+                    val initialMashup =
+                        collectionRepo.getMashup("0x10F418D9DaEbad69767f2Ab67d613503376d2b61")
+                    withContext(Dispatchers.Main) {
+                        mashupState.value = mashupState.value.copy(
                             mashupDetails = initialMashup,
                             colors = initialMashup.colors
                         )
-
+                    }
                     stackManager.clear()
-                    val isNotEmpty = collectionFlow.first().isNotEmpty()
-                    val updateSuccess = collectionRepo.updateOwnedData("0x10F418D9DaEbad69767f2Ab67d613503376d2b61")
 
-                    mashupUiState.value =
-                        mashupUiState.value.copy(isCollectionReady = isNotEmpty || updateSuccess)
+                    try {
+                        isSync.value = true
+                        collectionRepo.updateOwnedData("0x10F418D9DaEbad69767f2Ab67d613503376d2b61")
+                    } catch (e: Exception) {
+                        Timber.tag("GG").e(e, "updateOwnedData failed")
+                    } finally {
+                        isSync.value = false
+                    }
                 } else {
-                    mashupState.value = mashupState.value.copy(wallet = null)
+                    withContext(Dispatchers.Main) {
+                        mashupState.value = mashupState.value.copy(wallet = null)
+                    }
                     collectionRepo.clearOwned()
                 }
             }
@@ -128,7 +137,10 @@ class MashupViewModel @Inject constructor(
     private fun observeCollection() {
         viewModelScope.launch(Dispatchers.IO) {
             collectionFlow.distinctUntilChanged().collect { collection ->
-                mashupState.value = mashupState.value.copy(nfts = collection.fromEntities())
+                withContext(Dispatchers.Main) {
+                    mashupUiState.value = mashupUiState.value.copy(isCollectionReady = true)
+                    mashupState.value = mashupState.value.copy(nfts = collection.fromEntities())
+                }
             }
         }
     }
@@ -343,7 +355,12 @@ class MashupViewModel @Inject constructor(
                 }
             }
 
-            startImageDownload(jsonString, downloadType.type, worker = worker, mintedName = mintedName)
+            startImageDownload(
+                jsonString,
+                downloadType.type,
+                worker = worker,
+                mintedName = mintedName
+            )
         }
     }
 

@@ -24,7 +24,7 @@ fun DiscordButton() {
 
     IconButton(
         modifier = Modifier
-            .size(40.dp)
+            .size(32.dp)
             .height(ContentContainerHeight),
         onClick = { openSocialLink(context, uri) },
         colors = IconButtonDefaults.iconButtonColors().copy(
@@ -32,7 +32,7 @@ fun DiscordButton() {
         )
     ) {
         Image(
-            modifier = Modifier.size(28.dp),
+            modifier = Modifier.size(24.dp),
             painter = painterResource(R.drawable.discord),
             contentDescription = null
         )

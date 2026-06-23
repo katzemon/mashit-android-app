@@ -15,6 +15,5 @@ val navItems = listOf(
     NavItem("Shop", MainRoutes.Shop(listingId = null), R.drawable.shop_icon),
     NavItem("Artists", MainRoutes.Artists, R.drawable.artist_icon),
     NavItem("Collection", MainRoutes.Collection, R.drawable.collection_icon),
-    NavItem("Mashup", MainRoutes.Mashup, R.drawable.mashup_icon),
-    NavItem("Settings", MainRoutes.Settings, R.drawable.shop_icon)
+    NavItem("Mashup", MainRoutes.Mashup, R.drawable.mashup_icon)
 )

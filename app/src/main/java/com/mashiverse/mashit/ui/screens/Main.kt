@@ -126,7 +126,7 @@ fun Main(navController: NavHostController) {
             viewModel.setDialogContent(
                 DialogContent(
                     title = "Important",
-                    text = "Please grant notifications permission to be notified about new releases. You can disable this functionality in settings later."
+                    text = "Please grant notifications permission. We care about your silence!"
                 )
             )
         }
@@ -139,16 +139,13 @@ fun Main(navController: NavHostController) {
 
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
-    ) { isGranted ->
-        //viewModel.updateNotifications(isGranted)
-    }
+    ) { isGranted -> }
 
     val onFirstLaunchDialogClose = {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
         } else {
             val isGranted = checkNotificationsPermission(ctx)
-            //viewModel.updateNotifications(isGranted)
         }
         viewModel.setFirstLaunchCompleted()
         viewModel.clearDialog()

@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -56,7 +55,6 @@ fun BottomNavBar(
             .navigationBarsPadding()
             .height(64.dp)
             .padding(horizontal = 16.dp)
-
     ) {
         AnimatedVisibility(
             modifier = Modifier.align(Alignment.CenterStart),
@@ -74,7 +72,10 @@ fun BottomNavBar(
                 navItems.forEachIndexed { i, item ->
                     if (item.label == "Mashup") {
                         if (mashup.assets.mapNotNull { it.url }.isNotEmpty()) {
-                            Box(modifier = Modifier.size(40.dp), contentAlignment = Alignment.Center) {
+                            Box(
+                                modifier = Modifier.size(40.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
                                 ProfilePicture(
                                     onClick = {
                                         selectedDest = i
@@ -110,16 +111,14 @@ fun BottomNavBar(
                             }
                         }
                     } else {
-                        if (i != 4) {
-                            BottomItem(painterRes = item.icon, selected = selectedDest == i) {
-                                selectedDest = i
+                        BottomItem(painterRes = item.icon, selected = selectedDest == i) {
+                            selectedDest = i
 
-                                navController.navigate(route = item.route) {
-                                    popUpTo(navController.graph.id) {
-                                        inclusive = true
-                                    }
-                                    launchSingleTop = true
+                            navController.navigate(route = item.route) {
+                                popUpTo(navController.graph.id) {
+                                    inclusive = true
                                 }
+                                launchSingleTop = true
                             }
                         }
                     }

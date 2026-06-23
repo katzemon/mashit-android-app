@@ -20,6 +20,13 @@ class CollectionRepo @Inject constructor(
             val newCollection = alchemyRepo.getCollection(wallet)
             val oldCollection = nftRepo.ownedNftsFlow.first()
 
+            if (oldCollection.isEmpty()) {
+                if (newCollection.isNotEmpty()) {
+                    nftRepo.insertNfts(newCollection.toEntities())
+                }
+                return true
+            }
+
             val newNames = newCollection.map { it.name }.toSet()
             val oldNames = oldCollection.map { it.name }.toSet()
 
@@ -27,25 +34,12 @@ class CollectionRepo @Inject constructor(
             val toRemove = oldCollection.filter { it.name !in newNames }
             val toUpdate = newCollection.mapNotNull { new ->
                 val old = oldCollection.find { it.name == new.name }
-
-                if (old != null && new.owned != old.owned) {
-                    new
-                } else null
+                if (old != null && new.owned != old.owned) old.copy(owned = new.owned) else null
             }
 
-            if (toUpdate.isNotEmpty()) {
-                val list = toUpdate.toEntities()
-                nftRepo.insertNfts(list)
-            }
-
-            if (toAdd.isNotEmpty()) {
-                val list = toAdd.toEntities()
-                nftRepo.insertNfts(list)
-            }
-
-            if (toRemove.isNotEmpty()) {
-                nftRepo.deleteNfts(toRemove)
-            }
+            if (toUpdate.isNotEmpty()) nftRepo.insertNfts(toUpdate)
+            if (toAdd.isNotEmpty()) nftRepo.insertNfts(toAdd.toEntities())
+            if (toRemove.isNotEmpty()) nftRepo.deleteNfts(toRemove)
 
             return true
         } catch (e: Exception) {
