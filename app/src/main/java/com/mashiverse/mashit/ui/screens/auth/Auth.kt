@@ -19,9 +19,11 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -30,6 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mashiverse.mashit.R
+import com.mashiverse.mashit.data.models.sys.nav.previews
 import com.mashiverse.mashit.data.models.sys.wallet.WalletPreferences
 import com.mashiverse.mashit.ui.theme.Background
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
@@ -44,21 +47,20 @@ fun Auth(onLurking: () -> Unit, onAuth: () -> Unit) {
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        val resId = listOf(
-            R.drawable.mashup,
-            R.drawable.mashup2,
-            R.drawable.mashup3,
-            R.drawable.mashup4
-        ).random()
+        val randomPreview = remember { previews.random() }
 
         Image(
             modifier = Modifier
                 .fillMaxSize()
                 .blur(
-                    13.dp
-                ),
+                    7.dp
+                )
+                .drawWithContent {
+                    drawContent()
+                    drawRect(Color.Black.copy(alpha = 0.2f))
+                },
             contentDescription = null,
-            painter = painterResource(resId),
+            painter = painterResource(randomPreview.resId),
             contentScale = ContentScale.FillHeight
         )
 
@@ -105,7 +107,7 @@ fun Auth(onLurking: () -> Unit, onAuth: () -> Unit) {
                 .align(Alignment.BottomEnd)
                 .navigationBarsPadding()
                 .padding(bottom = 8.dp, end = 8.dp),
-            text = "mashup by u/Snek",
+            text = "mashup by u/${randomPreview.redditName}",
             color = ContentAccentColor.copy(alpha = 0.5F),
             fontSize = 10.sp
         )

@@ -34,4 +34,9 @@ object RoomModule {
     fun provideImageTypeDao(
         db: RoomDb
     ) = db.getImageTypeDao()
+
+    @Provides
+    fun provideMashupDao(
+        db: RoomDb
+    ) = db.getMashupDao()
 }

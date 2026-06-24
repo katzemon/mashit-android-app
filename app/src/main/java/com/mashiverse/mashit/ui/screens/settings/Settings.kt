@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
@@ -32,7 +31,6 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.ModifierInfo
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -41,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.mashiverse.mashit.R
+import com.mashiverse.mashit.data.models.sys.nav.previews
 import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.ContentContainerShape
 import com.mashiverse.mashit.ui.theme.Padding
@@ -74,30 +73,25 @@ fun Settings() {
         viewModel.updateNotifications(enabled)
     }
 
-    val resId = listOf(
-        R.drawable.mashup,
-        R.drawable.mashup2,
-        R.drawable.mashup3,
-        R.drawable.mashup4
-    ).random()
+    val randomPreview = remember { previews.random() }
 
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
         Image(
-            modifier = Modifier
+            modifier = Modifier.align(Alignment.TopCenter)
                 .wrapContentSize(unbounded = true)
                 .height(config.screenHeightDp.dp)
                 .clipToBounds()
                 .blur(
-                    13.dp
+                    7.dp
                 )
                 .drawWithContent {
                     drawContent()
-                    drawRect(Color.Black.copy(alpha = 0.7f))
+                    drawRect(Color.Black.copy(alpha = 0.4f))
                 },
             contentDescription = null,
-            painter = painterResource(resId),
+            painter = painterResource(randomPreview.resId),
             contentScale = ContentScale.FillHeight
         )
         Column(
@@ -105,29 +99,6 @@ fun Settings() {
                 .align(Alignment.TopStart)
                 .padding(Padding),
         ) {
-            Row(modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center) {
-                OutlinedButton(
-                    modifier = Modifier.width(256.dp),
-                    colors = ButtonDefaults.outlinedButtonColors().copy(
-                        containerColor = Color.Transparent,
-                        contentColor = ContentAccentColor,
-
-                        ),
-                    border = BorderStroke(width = 1.dp, Color.White),
-                    shape = ContentContainerShape,
-                    onClick = { viewModel.onDisconnect() },
-                    contentPadding = PaddingValues(horizontal = Padding)
-                ) {
-                    Text(
-                        modifier = Modifier,
-                        text = "Disconnect wallet",
-                        textAlign = TextAlign.Start,
-                        fontSize = 24.sp
-                    )
-                }
-            }
-
             Spacer(modifier = Modifier.height(Padding))
 
             CheckRow(
@@ -147,11 +118,39 @@ fun Settings() {
             }
         }
 
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 64.dp),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            OutlinedButton(
+                modifier = Modifier.width(256.dp),
+                colors = ButtonDefaults.outlinedButtonColors().copy(
+                    containerColor = Color.Transparent,
+                    contentColor = ContentAccentColor,
+
+                    ),
+                border = BorderStroke(width = 1.dp, Color.White),
+                shape = ContentContainerShape,
+                onClick = { viewModel.onDisconnect() },
+                contentPadding = PaddingValues(horizontal = Padding)
+            ) {
+                Text(
+                    modifier = Modifier,
+                    text = "Disconnect wallet",
+                    textAlign = TextAlign.Start,
+                    fontSize = 24.sp
+                )
+            }
+        }
+
         Text(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(bottom = 8.dp, end = 8.dp),
-            text = "mashup by u/Snek",
+            text = "mashup by u/${randomPreview.redditName}",
             color = ContentAccentColor.copy(alpha = 0.3F),
             fontSize = 10.sp
         )

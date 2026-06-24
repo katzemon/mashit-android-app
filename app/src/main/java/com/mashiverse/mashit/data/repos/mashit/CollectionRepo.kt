@@ -1,10 +1,13 @@
 package com.mashiverse.mashit.data.repos.mashit
 
+import com.mashiverse.mashit.data.local.db.daos.MashupDao
+import com.mashiverse.mashit.data.local.db.entities.MashupEntity
 import com.mashiverse.mashit.data.local.db.entities.NftEntity
 import com.mashiverse.mashit.data.models.mashi.mappers.toEntities
 import com.mashiverse.mashit.data.models.mashup.MashupDetails
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -12,6 +15,7 @@ class CollectionRepo @Inject constructor(
     val alchemyRepo: AlchemyRepo,
     val nftRepo: NftRepo,
     val mashitRepo: MashitRepo,
+    val mashupDao: MashupDao
 ) {
     val collectionFlow: Flow<List<NftEntity>> = nftRepo.ownedNftsFlow
 
@@ -52,5 +56,22 @@ class CollectionRepo @Inject constructor(
 
     suspend fun getMashup(wallet: String): MashupDetails {
         return mashitRepo.getMashup(wallet)
+    }
+
+    suspend fun getCachedMashup(wallet: String): MashupDetails? {
+        return mashupDao.getMashupByWallet(wallet)?.mashup
+    }
+
+    fun getCachedMashupFlow(wallet: String): Flow<MashupDetails?> {
+        return mashupDao.getMashupByWalletFlow(wallet).map { it?.mashup }
+    }
+
+    suspend fun cacheMashup(wallet: String, mashupDetails: MashupDetails) {
+        mashupDao.insertMashup(
+            MashupEntity(
+                wallet = wallet,
+                mashup = mashupDetails
+            )
+        )
     }
 }

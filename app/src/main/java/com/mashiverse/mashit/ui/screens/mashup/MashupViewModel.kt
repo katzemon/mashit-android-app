@@ -106,8 +106,9 @@ class MashupViewModel @Inject constructor(
                     withContext(Dispatchers.Main) {
                         mashupState.value = mashupState.value.copy(wallet = wallet)
                     }
-                    val initialMashup =
-                        collectionRepo.getMashup(wallet)
+                    var initialMashup =
+                        collectionRepo.getCachedMashup(wallet) ?: MashupDetails()
+
                     withContext(Dispatchers.Main) {
                         mashupState.value = mashupState.value.copy(
                             mashupDetails = initialMashup,
@@ -118,6 +119,14 @@ class MashupViewModel @Inject constructor(
 
                     try {
                         isSync.value = true
+
+                        val syncedMashup = collectionRepo.getMashup(wallet)
+                        mashupState.value = mashupState.value.copy(
+                            mashupDetails = syncedMashup,
+                            colors = syncedMashup.colors
+                        )
+                        collectionRepo.cacheMashup(wallet = wallet, mashupDetails = syncedMashup)
+
                         collectionRepo.updateOwnedData(wallet)
                     } catch (e: Exception) {
                         Timber.tag("GG").e(e, "updateOwnedData failed")
@@ -239,6 +248,10 @@ class MashupViewModel @Inject constructor(
             )
 
             val dialogContent = if (res?.success == true) {
+                collectionRepo.cacheMashup(
+                    wallet = uiState.wallet,
+                    mashupDetails = uiState.mashupDetails
+                )
                 DialogContent(
                     title = "Mashup Saved",
                     text = "Enjoy sharing it with friends"

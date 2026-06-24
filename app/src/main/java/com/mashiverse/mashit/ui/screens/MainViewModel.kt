@@ -17,6 +17,7 @@ import com.mashiverse.mashit.data.states.sys.ImageIntent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -29,30 +30,15 @@ class MainViewModel @Inject constructor(
 ) : ViewModel() {
     val walletPreferences = dataStoreRepo.walletFlow
     val firstLaunchPreferences = dataStoreRepo.firstLaunchFlow
-
-    val mashup: MutableState<MashupDetails> = mutableStateOf(MashupDetails())
+    val mashupFlow = walletPreferences.flatMapLatest {
+        collectionRepo.getCachedMashupFlow(it.wallet ?: "")
+    }
 
     private val _dialogContent = mutableStateOf<DialogContent?>(null)
     val dialogContent: State<DialogContent?> = _dialogContent
 
-    init {
-        observeWallet()
-    }
-
     fun clearDialog() {
         _dialogContent.value = null
-    }
-
-    private fun observeWallet() {
-        viewModelScope.launch(Dispatchers.IO) {
-            walletPreferences.distinctUntilChanged().collect { prefs ->
-                val wallet = prefs.wallet
-
-                if (!wallet.isNullOrEmpty()) {
-                    mashup.value = collectionRepo.getMashup(wallet)
-                }
-            }
-        }
     }
 
     fun processImageIntent(intent: ImageIntent) {

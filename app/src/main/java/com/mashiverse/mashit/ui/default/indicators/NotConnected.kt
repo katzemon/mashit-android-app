@@ -18,6 +18,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mashiverse.mashit.R
+import com.mashiverse.mashit.ui.theme.ContentAccentColor
 import com.mashiverse.mashit.ui.theme.Primary
 
 @Composable
@@ -33,10 +34,9 @@ fun NotConnected() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Connect your wallet\n" +
-                        "to see this section!",
+                text = "Please relaunch the app \nand connect wallet!",
                 fontSize = 16.sp,
-                color = Primary,
+                color = ContentAccentColor,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center
             )

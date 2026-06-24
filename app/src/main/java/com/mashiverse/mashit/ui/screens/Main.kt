@@ -36,6 +36,7 @@ import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.mashiverse.mashit.data.models.mashup.MashupDetails
 import com.mashiverse.mashit.data.models.sys.dialog.DialogContent
 import com.mashiverse.mashit.data.models.sys.wallet.WalletPreferences
 import com.mashiverse.mashit.nav.graphs.mainGraph
@@ -164,7 +165,7 @@ fun Main(navController: NavHostController) {
         clearSearchQuery.invoke()
     }
 
-    val mashup by remember { viewModel.mashup }
+    val mashup by viewModel.mashupFlow.collectAsState(null)
 
     if (isReady) {
         if (walletPreferences.wallet != null || isLurking) {
@@ -174,7 +175,7 @@ fun Main(navController: NavHostController) {
                 bottomBar = {
                     BottomNavBar(
                         navController = navController,
-                        mashup = mashup,
+                        mashup = mashup ?: MashupDetails(),
                         searchQuery = searchQuery.value,
                         onSearchQueryChange = onSearchQueryChange,
                         isSearch = isSearch,
