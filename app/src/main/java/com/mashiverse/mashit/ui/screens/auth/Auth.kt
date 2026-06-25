@@ -53,7 +53,7 @@ fun Auth(onLurking: () -> Unit, onAuth: () -> Unit) {
             modifier = Modifier
                 .fillMaxSize()
                 .blur(
-                    7.dp
+                    11.dp
                 )
                 .drawWithContent {
                     drawContent()
@@ -61,7 +61,7 @@ fun Auth(onLurking: () -> Unit, onAuth: () -> Unit) {
                 },
             contentDescription = null,
             painter = painterResource(randomPreview.resId),
-            contentScale = ContentScale.FillHeight
+            contentScale = ContentScale.Crop
         )
 
         Column(

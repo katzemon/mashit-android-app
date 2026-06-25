@@ -55,7 +55,7 @@ import kotlinx.coroutines.launch
 @SuppressLint("ConfigurationScreenWidthHeight", "FlowOperatorInvokedInComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Collection(searchQuery: State<String>) {
+fun Collection(searchQuery: State<String>, onSignIn: () -> Unit) {
     val config = LocalConfiguration.current
     val screenType = config.detectScreenType()
 
@@ -194,6 +194,6 @@ fun Collection(searchQuery: State<String>) {
             }
         }
     } else {
-        NotConnected()
+        NotConnected(onSignIn = onSignIn)
     }
 }

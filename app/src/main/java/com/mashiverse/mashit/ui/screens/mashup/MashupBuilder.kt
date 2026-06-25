@@ -74,7 +74,7 @@ import com.mashiverse.mashit.utils.helpers.sys.detectScreenType
 )
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MashupBuilder(searchQuery: State<String>, openSettings: () -> Unit) {
+fun MashupBuilder(searchQuery: State<String>, openSettings: () -> Unit, onSignIn: () -> Unit) {
     val searchQuery by remember(searchQuery.value) {
         mutableStateOf(searchQuery.value)
     }
@@ -345,7 +345,7 @@ fun MashupBuilder(searchQuery: State<String>, openSettings: () -> Unit) {
                 }
             }
         } else {
-            NotConnected()
+            NotConnected(onSignIn = onSignIn)
         }
 
         if (mashupUiState.isColorChange) {

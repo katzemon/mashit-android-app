@@ -51,7 +51,6 @@ import com.mashiverse.mashit.utils.helpers.sys.getNotificationsPermission
 @Composable
 fun Settings() {
     val activity = LocalActivity.current
-    val config = LocalConfiguration.current
 
     val ctx = LocalContext.current
     val viewModel = hiltViewModel<SettingsViewModel>()
@@ -80,11 +79,9 @@ fun Settings() {
     ) {
         Image(
             modifier = Modifier.align(Alignment.TopCenter)
-                .wrapContentSize(unbounded = true)
-                .height(config.screenHeightDp.dp)
-                .clipToBounds()
+                .fillMaxSize()
                 .blur(
-                    7.dp
+                    11.dp
                 )
                 .drawWithContent {
                     drawContent()
@@ -92,7 +89,7 @@ fun Settings() {
                 },
             contentDescription = null,
             painter = painterResource(randomPreview.resId),
-            contentScale = ContentScale.FillHeight
+            contentScale = ContentScale.Crop
         )
         Column(
             modifier = Modifier

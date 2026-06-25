@@ -74,6 +74,7 @@ fun Main(navController: NavHostController) {
             onSessionApproved = { walletPrefs ->
                 viewModel.updateWallet(walletPrefs)
                 isSignIn = false
+                isLurking = false
             },
             onSessionRejected = { isSignIn = false }
         )
@@ -167,6 +168,10 @@ fun Main(navController: NavHostController) {
 
     val mashup by viewModel.mashupFlow.collectAsState(null)
 
+    val onSignIn = {
+        isSignIn = true
+    }
+
     if (isReady) {
         if (walletPreferences.wallet != null || isLurking) {
             Scaffold(
@@ -194,6 +199,7 @@ fun Main(navController: NavHostController) {
                         .padding(top = SmallPadding)
                 ) {
                     mainGraph(
+                        onSignIn = onSignIn,
                         searchQuery = searchQuery,
                         clearSearchQuery = clearSearchQuery
                     )

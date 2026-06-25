@@ -9,13 +9,12 @@ import com.mashiverse.mashit.nav.routes.MainRoutes
 import com.mashiverse.mashit.ui.screens.artists.Artists
 import com.mashiverse.mashit.ui.screens.collection.Collection
 import com.mashiverse.mashit.ui.screens.mashup.Mashup
-import com.mashiverse.mashit.ui.screens.mashup.MashupBuilder
-import com.mashiverse.mashit.ui.screens.settings.Settings
 import com.mashiverse.mashit.ui.screens.shop.Shop
 
 fun NavGraphBuilder.mainGraph(
     searchQuery: State<String>,
     clearSearchQuery: () -> Unit,
+    onSignIn: () -> Unit,
 ) {
     composable<MainRoutes.Shop>(
         deepLinks = listOf(
@@ -36,10 +35,10 @@ fun NavGraphBuilder.mainGraph(
     }
 
     composable<MainRoutes.Collection> {
-        Collection(searchQuery)
+        Collection(searchQuery, onSignIn = onSignIn)
     }
 
     composable<MainRoutes.Mashup> {
-        Mashup(searchQuery)
+        Mashup(searchQuery, onSignIn = onSignIn)
     }
 }

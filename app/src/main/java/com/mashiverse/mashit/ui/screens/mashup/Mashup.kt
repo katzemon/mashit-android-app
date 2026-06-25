@@ -10,7 +10,7 @@ import com.mashiverse.mashit.nav.graphs.mashupGraph
 import com.mashiverse.mashit.nav.routes.MashupRoutes
 
 @Composable
-fun Mashup(searchQ: State<String>) {
+fun Mashup(searchQ: State<String>, onSignIn: () -> Unit) {
     val innerNavController = rememberNavController()
 
     val openSettings = {
@@ -23,6 +23,7 @@ fun Mashup(searchQ: State<String>) {
         startDestination = MashupRoutes.Builder
     ) {
         mashupGraph(
+            onSignIn = onSignIn,
             searchQ = searchQ,
             openSettings = openSettings
         )
