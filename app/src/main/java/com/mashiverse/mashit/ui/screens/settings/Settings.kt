@@ -58,19 +58,11 @@ fun Settings() {
     val notifications = viewModel.notificationsFlow.collectAsState(false)
     val isNotifications by remember(notifications.value) { mutableStateOf(notifications.value) }
 
+    val moreTraits = viewModel.moreTraitsFlow.collectAsState(false)
+    val isMoreTraits by remember( moreTraits.value) { mutableStateOf(moreTraits.value) }
+
     val specialDrops = viewModel.specialDropsFlow.collectAsState(false)
     val isSpecialDrops by remember(specialDrops.value) { mutableStateOf(specialDrops.value) }
-
-    val updateNotifications = { enabled: Boolean ->
-        if (enabled) {
-            if (!checkNotificationsPermission(ctx)) {
-                activity?.let {
-                    getNotificationsPermission(ctx, activity)
-                }
-            }
-        }
-        viewModel.updateNotifications(enabled)
-    }
 
     val randomPreview = remember { previews.random() }
 
@@ -102,7 +94,7 @@ fun Settings() {
                 title = "Opt in to new releases",
                 checked = isNotifications
             ) { checked ->
-                updateNotifications.invoke(checked)
+                viewModel.updateNotifications(checked)
             }
 
             Spacer(modifier = Modifier.height(SmallPadding))
@@ -113,6 +105,16 @@ fun Settings() {
             ) { checked ->
                 viewModel.updateSpecialDrops(checked)
             }
+
+            Spacer(modifier = Modifier.height(SmallPadding))
+
+            CheckRow(
+                title = "More traits a row",
+                checked = isMoreTraits
+            ) { checked ->
+                viewModel.updateMoreTraits(checked)
+            }
+
         }
 
         Row(

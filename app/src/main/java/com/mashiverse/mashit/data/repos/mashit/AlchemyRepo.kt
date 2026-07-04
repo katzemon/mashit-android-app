@@ -107,7 +107,6 @@ class AlchemyRepo @Inject constructor(
                 if (key == null) return nfts
             }
         } catch (e: Exception) {
-            Timber.tag("GG").d(e)
             return emptyList()
         }
     }

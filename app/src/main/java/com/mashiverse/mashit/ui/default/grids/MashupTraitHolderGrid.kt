@@ -10,7 +10,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import com.mashiverse.mashit.data.models.mashup.MashupTrait
 import com.mashiverse.mashit.data.states.mashup.MashupIntent
 import com.mashiverse.mashit.data.states.sys.ImageIntent
@@ -27,7 +26,8 @@ fun MashupTraitHolderGrid(
     spacedByHoriz: Dp,
     columns: Int,
     processMashupIntent: (MashupIntent) -> Unit,
-    processImageIntent: (ImageIntent) -> Unit
+    processImageIntent: (ImageIntent) -> Unit,
+    isMoreTraits: Boolean
 ) {
     LazyVerticalGrid(
         modifier = modifier
@@ -39,6 +39,7 @@ fun MashupTraitHolderGrid(
     ) {
         items(items.size) { i ->
             MashupTraitHolder(
+                isMoreTraits = isMoreTraits,
                 isSelected = items[i].trait.url == selectedTraitUrl,
                 mashupTrait = items[i],
                 processMashupIntent = processMashupIntent,

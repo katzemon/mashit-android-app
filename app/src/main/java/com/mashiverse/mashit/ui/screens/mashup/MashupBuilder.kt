@@ -25,6 +25,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -67,6 +68,8 @@ import com.mashiverse.mashit.utils.color.helpers.toHexColor
 import com.mashiverse.mashit.utils.helpers.nft.getTraitsByType
 import com.mashiverse.mashit.utils.helpers.nft.sortNfts
 import com.mashiverse.mashit.utils.helpers.sys.detectScreenType
+import kotlin.div
+import kotlin.times
 
 @SuppressLint(
     "ConfigurationScreenWidthHeight", "FlowOperatorInvokedInComposition",
@@ -96,6 +99,7 @@ fun MashupBuilder(searchQuery: State<String>, openSettings: () -> Unit, onSignIn
 
     val mashupUiState by remember { viewModel.mashupUiState }
     val mashupState by remember { viewModel.mashupState }
+    val moreTraits by viewModel.moreTraitsFlow.collectAsState(initial = false)
 
 
     val selectedColorType by remember(mashupState.selectedColorType) {
@@ -275,6 +279,7 @@ fun MashupBuilder(searchQuery: State<String>, openSettings: () -> Unit, onSignIn
                     if (mashupUiState.isCollectionReady) {
                         if (mashupUiState.isCollectibles) {
                             CollectiblesCategory(
+                                isMoreTraits = moreTraits,
                                 modifier = Modifier.weight(1F),
                                 nfts = sortedNfts,
                                 mashupDetails = mashupState.mashupDetails,
@@ -288,14 +293,21 @@ fun MashupBuilder(searchQuery: State<String>, openSettings: () -> Unit, onSignIn
                                 processImageIntent = { intent -> viewModel.processImageIntent(intent) }
                             )
                         } else {
+                            val (hPadding, vPadding, columns) = if (moreTraits) {
+                                Triple(8.dp, 8.dp, screenType.collectionColumns / 3 * 4)
+                            } else {
+                                Triple(MediumPadding, MediumPadding, screenType.collectionColumns)
+                            }
+
                             MashupTraitHolderGrid(
+                                isMoreTraits = moreTraits,
                                 modifier = Modifier.weight(1f),
                                 items = traits,
                                 selectedTraitUrl = selectedTraitUrl,
                                 state = traitsGridState,
-                                spacedByHoriz = MediumPadding,
-                                spacedByVert = MediumPadding,
-                                columns = screenType.collectionColumns,
+                                spacedByHoriz = hPadding,
+                                spacedByVert = vPadding,
+                                columns = columns,
                                 processImageIntent = { intent -> viewModel.processImageIntent(intent) },
                                 processMashupIntent = { intent ->
                                     viewModel.processMashupIntent(

@@ -69,6 +69,7 @@ class MashupViewModel @Inject constructor(
 
     private val walletFlow = dataStoreRepo.walletFlow
     private val collectionFlow = collectionRepo.collectionFlow
+    val moreTraitsFlow = dataStoreRepo.moreTraitsFlow
 
     var isSync = mutableStateOf(false)
         private set

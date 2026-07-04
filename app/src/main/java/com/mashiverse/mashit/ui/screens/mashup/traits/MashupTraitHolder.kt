@@ -35,7 +35,8 @@ fun MashupTraitHolder(
     isSelected: Boolean = false,
     mashupTrait: MashupTrait,
     processMashupIntent: (MashupIntent) -> Unit,
-    processImageIntent: (ImageIntent) -> Unit
+    processImageIntent: (ImageIntent) -> Unit,
+    isMoreTraits: Boolean
 ) {
     val avatarName = mashupTrait.avatarName.substringBefore("#").trimIndent()
 
@@ -61,20 +62,22 @@ fun MashupTraitHolder(
             )
         }
 
-        Spacer(modifier = Modifier.height(ExtraSmallPadding))
+        if (!isMoreTraits) {
+            Spacer(modifier = Modifier.height(ExtraSmallPadding))
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = avatarName,
-                color = ContentAccentColor,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = avatarName,
+                    color = ContentAccentColor,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
         }
     }
 }

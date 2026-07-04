@@ -16,6 +16,7 @@ import kotlinx.coroutines.CoroutineScope
 
 @Composable
 fun CollectiblesCategory(
+    isMoreTraits: Boolean = false,
     nfts: List<Nft>,
     state: LazyListState,
     mashupDetails: MashupDetails,
@@ -34,6 +35,7 @@ fun CollectiblesCategory(
             val nft = nfts[i]
 
             CollectiblePreview(
+                isMoreTraits = isMoreTraits,
                 nft = nft,
                 position = i,
                 state = state,

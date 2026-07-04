@@ -28,9 +28,9 @@ fun TraitHolder(
     onClick: () -> Unit,
     trait: Trait,
     isSelected: Boolean = false,
-    processImageIntent: (ImageIntent) -> Unit
+    processImageIntent: (ImageIntent) -> Unit,
+    isMoreTraits: Boolean = false
 ) {
-
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -54,15 +54,17 @@ fun TraitHolder(
             )
         }
 
-        Spacer(modifier = Modifier.height(4.dp))
+        if (!isMoreTraits) {
+            Spacer(modifier = Modifier.height(4.dp))
 
-        Text(
-            text = trait.type.name
-                .lowercase()
-                .replace("_", " ")
-                .replaceFirstChar { c -> c.uppercaseChar() },
-            color = ContentAccentColor,
-            fontSize = 12.sp
-        )
+            Text(
+                text = trait.type.name
+                    .lowercase()
+                    .replace("_", " ")
+                    .replaceFirstChar { c -> c.uppercaseChar() },
+                color = ContentAccentColor,
+                fontSize = 12.sp
+            )
+        }
     }
 }

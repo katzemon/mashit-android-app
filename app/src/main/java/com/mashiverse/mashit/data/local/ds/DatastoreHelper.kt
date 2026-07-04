@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.mashiverse.mashit.utils.FIRST_LAUNCH_KEY
 import com.mashiverse.mashit.utils.MASHIT_PREFERENCES
+import com.mashiverse.mashit.utils.MORE_TRAITS_KEY
 import com.mashiverse.mashit.utils.NOTIFICATIONS_KEY
 import com.mashiverse.mashit.utils.SPECIAL_DROPS_KEY
 import com.mashiverse.mashit.utils.WALLET_KEY
@@ -21,4 +22,5 @@ object PreferencesKeys {
     val FIRST_LAUNCH = booleanPreferencesKey(FIRST_LAUNCH_KEY)
     val NOTIFICATIONS = booleanPreferencesKey(NOTIFICATIONS_KEY)
     val SPECIAL_DROPS = booleanPreferencesKey(SPECIAL_DROPS_KEY)
+    val MORE_TRAITS = booleanPreferencesKey(MORE_TRAITS_KEY)
 }

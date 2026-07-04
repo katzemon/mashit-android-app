@@ -32,7 +32,9 @@ class DatastoreRepo @Inject constructor(
             .map { preferences ->
                 WalletPreferences(
                     wallet = preferences[PreferencesKeys.WALLET],
-                    walletType = WalletType.valueOf(preferences[PreferencesKeys.WALLET_TYPE] ?: "BASE")
+                    walletType = WalletType.valueOf(
+                        preferences[PreferencesKeys.WALLET_TYPE] ?: "BASE"
+                    )
                 )
             }
 
@@ -75,10 +77,29 @@ class DatastoreRepo @Inject constructor(
                 preferences[PreferencesKeys.SPECIAL_DROPS] ?: false
             }
 
+    val moreTraitsFlow: Flow<Boolean> =
+        datastore.data
+            .catch { e ->
+                if (e is IOException) {
+                    emit(emptyPreferences())
+                } else {
+                    Timber.tag("Test").d(e)
+                }
+            }
+            .map { preferences ->
+                preferences[PreferencesKeys.MORE_TRAITS] ?: false
+            }
+
     suspend fun updateWallet(walletPreferences: WalletPreferences) {
         datastore.edit { preferences ->
             preferences[PreferencesKeys.WALLET] = walletPreferences.wallet ?: ""
             preferences[PreferencesKeys.WALLET_TYPE] = walletPreferences.walletType.name
+        }
+    }
+
+    suspend fun updateMoreTraits(enabled: Boolean) {
+        datastore.edit { preferences ->
+            preferences[PreferencesKeys.MORE_TRAITS] = enabled
         }
     }
 

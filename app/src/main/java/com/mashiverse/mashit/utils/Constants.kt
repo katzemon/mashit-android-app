@@ -9,6 +9,7 @@ const val WALLET_TYPE_KEY = "wallet_type"
 const val FIRST_LAUNCH_KEY = "first_launch"
 const val NOTIFICATIONS_KEY = "notifications"
 const val SPECIAL_DROPS_KEY = "special_drops"
+const val MORE_TRAITS_KEY = "more_traits"
 
 
 // API URLs

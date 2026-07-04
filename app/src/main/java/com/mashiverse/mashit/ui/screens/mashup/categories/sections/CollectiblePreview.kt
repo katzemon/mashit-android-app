@@ -22,7 +22,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowCircleDown
 import androidx.compose.material.icons.filled.ArrowCircleUp
-import androidx.compose.material.icons.filled.ArrowDropUp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -59,6 +58,7 @@ import kotlinx.coroutines.CoroutineScope
 
 @Composable
 fun CollectiblePreview(
+    isMoreTraits: Boolean = false,
     nft: Nft,
     mashupDetails: MashupDetails,
     position: Int,
@@ -72,19 +72,24 @@ fun CollectiblePreview(
     val config = LocalConfiguration.current
     val screenType = config.detectScreenType()
 
-
     val isSelected = { trait: Trait ->
         val sameTypeTrait = mashupDetails.assets.find { it.type == trait.type }
         sameTypeTrait?.url == trait.url
+    }
+
+    val (hPadding, vPadding, columns) = if (isMoreTraits) {
+        Triple(7.5.dp, 8.dp, screenType.collectionColumns / 3 * 4)
+    } else {
+        Triple(11.5.dp, MediumPadding, screenType.collectionColumns)
     }
 
     BoxWithConstraints {
         val constraints = this
 
         val width = getItemWidth(
-            screenType.collectionColumns,
+            columns,
             maxWidth = constraints.maxWidth,
-            MediumPadding,
+            vPadding,
             initialPadding = -Padding
         )
 
@@ -151,6 +156,7 @@ fun CollectiblePreview(
                 }
             }
 
+
             AnimatedVisibility(isExpanded) {
                 Column(
                     modifier = Modifier.onPlaced {
@@ -169,12 +175,13 @@ fun CollectiblePreview(
                         modifier = Modifier
                             .fillMaxWidth()
                             .wrapContentHeight(),
-                        verticalArrangement = Arrangement.spacedBy(MediumPadding),
-                        horizontalArrangement = Arrangement.spacedBy(11.5.dp),
-                        maxItemsInEachRow = screenType.collectionColumns
+                        verticalArrangement = Arrangement.spacedBy(vPadding),
+                        horizontalArrangement = Arrangement.spacedBy(hPadding),
+                        maxItemsInEachRow = columns
                     ) {
                         nft.traits?.forEach { trait ->
                             TraitHolder(
+                                isMoreTraits = isMoreTraits,
                                 modifier = Modifier
                                     .width(width),
                                 isSelected = isSelected.invoke(trait),

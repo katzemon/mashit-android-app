@@ -39,4 +39,9 @@ object RoomModule {
     fun provideMashupDao(
         db: RoomDb
     ) = db.getMashupDao()
+
+    @Provides
+    fun provideFavoriteArtistDao(
+        db: RoomDb
+    ) = db.getFavoriteArtistDao()
 }
