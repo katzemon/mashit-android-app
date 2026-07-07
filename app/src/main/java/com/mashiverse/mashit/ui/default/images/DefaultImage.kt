@@ -46,7 +46,7 @@ fun DefaultImage(
             when (imageType) {
                 ImageType.SVG, ImageType.SVG_MASK -> {
                     val newData = when (imageType) {
-                        ImageType.SVG -> data
+                        ImageType.SVG -> data.replace("https://ipfs.filebase.io/", "https://round-peach-hippopotamus.myfilebase.com/")
                         ImageType.SVG_MASK -> "${MASHIVERSE_BASE_URL}api/svg/${
                             data.split("/").last()
                         }"
@@ -73,7 +73,7 @@ fun DefaultImage(
                 else -> {
                     NonSvgImage(
                         modifier = modifier.fillMaxSize(),
-                        data = data,
+                        data = data.replace("https://ipfs.filebase.io/", "https://round-peach-hippopotamus.myfilebase.com/") ,
                         contentScale = contentScale
                     )
                 }
