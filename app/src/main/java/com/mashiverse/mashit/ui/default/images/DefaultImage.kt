@@ -28,7 +28,7 @@ fun DefaultImage(
 ) {
 
     val imageType by rememberImageType(
-        data = data,
+        data = data.replace("https://ipfs.filebase.io/", "https://round-peach-hippopotamus.myfilebase.com/"),
         processImageIntent = processImageIntent
     )
 
