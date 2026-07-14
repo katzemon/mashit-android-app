@@ -47,7 +47,7 @@ fun ShopItem(
                 .aspectRatio(3f / 4f),
             onClick = { processShopIntent(ShopIntent.OnNftSelect(productInfo?.id ?: "")) },
             data = nft.compositeUrl,
-            processImageIntent = processImageIntent
+            processImageIntent = processImageIntent,
         )
 
         Spacer(modifier = Modifier.height(ExtraSmallPadding))

@@ -68,8 +68,6 @@ import com.mashiverse.mashit.utils.color.helpers.toHexColor
 import com.mashiverse.mashit.utils.helpers.nft.getTraitsByType
 import com.mashiverse.mashit.utils.helpers.nft.sortNfts
 import com.mashiverse.mashit.utils.helpers.sys.detectScreenType
-import kotlin.div
-import kotlin.times
 
 @SuppressLint(
     "ConfigurationScreenWidthHeight", "FlowOperatorInvokedInComposition",
@@ -313,7 +311,8 @@ fun MashupBuilder(searchQuery: State<String>, openSettings: () -> Unit, onSignIn
                                     viewModel.processMashupIntent(
                                         intent
                                     )
-                                }
+                                },
+                                colors = mashupState.colors
                             )
                         }
 

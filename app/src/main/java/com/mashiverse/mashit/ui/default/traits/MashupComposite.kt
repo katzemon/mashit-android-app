@@ -46,10 +46,10 @@ fun MashupComposite(
                     modifier = Modifier
                         .width(width)
                         .height(height),
-                    selectedColors = colors,
                     data = trait.url ?: "",
+                    processImageIntent = processImageIntent,
+                    selectedColors = colors,
                     contentScale = contentScale,
-                    processImageIntent = processImageIntent
                 )
             }
         }

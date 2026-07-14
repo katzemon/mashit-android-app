@@ -20,6 +20,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mashiverse.mashit.data.models.mashup.MashupTrait
+import com.mashiverse.mashit.data.models.mashup.colors.SelectedColors
 import com.mashiverse.mashit.data.states.mashup.MashupIntent
 import com.mashiverse.mashit.data.states.sys.ImageIntent
 import com.mashiverse.mashit.ui.default.images.DefaultImage
@@ -36,7 +37,9 @@ fun MashupTraitHolder(
     mashupTrait: MashupTrait,
     processMashupIntent: (MashupIntent) -> Unit,
     processImageIntent: (ImageIntent) -> Unit,
-    isMoreTraits: Boolean
+    isMoreTraits: Boolean,
+    colors: SelectedColors,
+    isPreview: Boolean = false
 ) {
     val avatarName = mashupTrait.avatarName.substringBefore("#").trimIndent()
 
@@ -58,7 +61,9 @@ fun MashupTraitHolder(
                 modifier = Modifier,
                 onClick = { processMashupIntent(MashupIntent.OnMashupUpdate(mashupTrait)) },
                 data = mashupTrait.trait.url ?: "",
-                processImageIntent = processImageIntent
+                processImageIntent = processImageIntent,
+                selectedColors = colors,
+                isPreview = isPreview
             )
         }
 

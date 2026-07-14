@@ -24,7 +24,8 @@ fun DefaultImage(
     data: String,
     processImageIntent: (ImageIntent) -> Unit,
     selectedColors: SelectedColors? = null,
-    contentScale: ContentScale = ContentScale.FillHeight
+    contentScale: ContentScale = ContentScale.FillHeight,
+    isPreview: Boolean = false
 ) {
 
     val imageType by rememberImageType(
@@ -57,7 +58,8 @@ fun DefaultImage(
                         modifier = modifier.fillMaxSize(),
                         data = newData,
                         selectedColors = selectedColors,
-                        contentScale = contentScale
+                        contentScale = contentScale,
+                        isPreview = isPreview
                     )
                 }
 

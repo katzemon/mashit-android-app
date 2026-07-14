@@ -47,10 +47,9 @@ fun TraitHolder(
                 .padding(4.dp),
         ) {
             DefaultImage(
-                modifier = Modifier,
-                data = trait.url ?: "",
                 onClick = onClick,
-                processImageIntent = processImageIntent
+                data = trait.url ?: "",
+                processImageIntent = processImageIntent,
             )
         }
 

@@ -10,7 +10,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.mashiverse.mashit.data.models.artists.ArtistMashup
 import com.mashiverse.mashit.data.states.sys.ImageIntent
 import com.mashiverse.mashit.ui.default.images.DefaultImage
@@ -40,9 +39,9 @@ fun ProfilePicture(
                 modifier = Modifier.matchParentSize(),
                 onClick = onClick,
                 data = url,
-                selectedColors = artistMashup.colors,
                 processImageIntent = processImageIntent,
-                contentScale = ContentScale.Crop
+                selectedColors = artistMashup.colors,
+                contentScale = ContentScale.Crop,
             )
         }
     }
